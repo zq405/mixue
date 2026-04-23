@@ -34,9 +34,16 @@
             gap: 15px;
         }
 
-        .logo img {
+        .logo-icon {
+            width: 50px;
             height: 50px;
-            width: auto;
+            background: linear-gradient(135deg, #d6001c, #ff6b6b);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
         }
 
         .logo h1 {
@@ -427,8 +434,8 @@
 
 <div class="navbar">
     <div class="logo">
-        <img src="images/Mixue-Logo.jpg" alt="Mixue Logo" onerror="this.src='https://placehold.co/50x50/d6001c/white?text=M'">
-        <h1 id="brandName">🍦 蜜雪冰城培训系统</h1>
+        <div class="logo-icon">🍦</div>
+        <h1 id="brandName">蜜雪冰城培训系统</h1>
     </div>
     <div class="nav-links" id="navLinks">
         <a onclick="showPage('dashboard')" id="navHome">首页</a>
@@ -457,7 +464,7 @@
 const translations = {
     zh: {
         pageTitle: "蜜雪冰城培训系统",
-        brandName: "🍦 蜜雪冰城培训系统",
+        brandName: "蜜雪冰城培训系统",
         navHome: "首页",
         navFront: "前场培训",
         navBack: "后场培训",
@@ -511,7 +518,7 @@ const translations = {
     },
     en: {
         pageTitle: "Mixue Training System",
-        brandName: "🍦 Mixue Training System",
+        brandName: "Mixue Training System",
         navHome: "Home",
         navFront: "Front Training",
         navBack: "Back Training",
@@ -566,17 +573,16 @@ const translations = {
 };
 
 // ============================================
-// 培训数据（完整版，根据后场.text和前场.md）
+// 培训数据
 // ============================================
 
 const trainingData = {
-    // 前场培训 - 饮品SOP
     front: [
-        { id: 1, title: "绿茶系列", category: "front", order: 1,
+        { id: 1, title: "绿茶系列",
           contentZh: `<div class="ingredient-list">📋 绿茶系列 SOP（700ml杯）</div>
 <div class="step"><span class="step-number">1</span> <strong>原味茉莉绿茶</strong><br>• 糖浆 60g<br>• 茉莉绿茶 240ml<br>• 加冰加水至满杯</div>
-<div class="step"><span class="step-number">2</span> <strong>蜜桃茉莉绿茶</strong><br>• 糖浆 40g<br>• 桃子果酱 75g<br>• 黄桃晶球 120g<br>• 茉莉绿茶 120ml<br>• 加冰加水至满杯</div>
-<div class="step"><span class="step-number">3</span> <strong>奇异果茉莉绿茶</strong><br>• 果糖 20g + 糖浆 40g<br>• 椰子冻 50g<br>• 奇异果酱 75g<br>• 黄桃晶球 40g<br>• 茉莉绿茶 120ml<br>• 加冰加水至满杯</div>
+<div class="step"><span class="step-number">2</span> <strong>蜜桃茉莉绿茶</strong><br>• 糖浆 40g<br>• 桃子果酱 75g<br>• 黄桃晶球 120g<br>• 茉莉绿茶 120ml</div>
+<div class="step"><span class="step-number">3</span> <strong>奇异果茉莉绿茶</strong><br>• 果糖 20g + 糖浆 40g<br>• 椰子冻 50g<br>• 奇异果酱 75g<br>• 黄桃晶球 40g<br>• 茉莉绿茶 120ml</div>
 <div class="step"><span class="step-number">4</span> <strong>草莓蜜桃茶</strong><br>• 糖浆 40g<br>• 草莓果酱 75g<br>• 蜜桃果酱 25g<br>• 水晶冻 50g<br>• 茉莉绿茶 120ml</div>
 <div class="step"><span class="step-number">5</span> <strong>草莓波波</strong><br>• 柠檬片 40g（不捶打）<br>• 糖浆 40g<br>• 草莓果酱 100g<br>• 水晶冻 50g<br>• 茉莉绿茶 120ml</div>
 <div class="step"><span class="step-number">6</span> <strong>柠檬茉莉绿茶</strong><br>• 柠檬 40g（捶打）<br>• 果糖 40g + 糖浆 30g<br>• 茉莉绿茶 160ml</div>`,
@@ -588,7 +594,7 @@ const trainingData = {
 <div class="step"><span class="step-number">5</span> <strong>Strawberry Bobo</strong><br>• Lemon 40g (no punch)<br>• Syrup 40g<br>• Strawberry jam 100g<br>• Crystal jelly 50g<br>• Jasmine tea 120ml</div>
 <div class="step"><span class="step-number">6</span> <strong>Lemon Jasmine Tea</strong><br>• Lemon 40g (punch)<br>• Fructose 40g + Syrup 30g<br>• Jasmine tea 160ml</div>` },
         
-        { id: 2, title: "红茶系列", category: "front", order: 2,
+        { id: 2, title: "红茶系列",
           contentZh: `<div class="ingredient-list">📋 红茶系列 SOP（700ml杯）</div>
 <div class="step"><span class="step-number">1</span> <strong>原味红茶</strong><br>• 糖浆 50g<br>• 红茶 200ml<br>• 加冰加水至满杯</div>
 <div class="step"><span class="step-number">2</span> <strong>蜜桃红茶</strong><br>• 糖浆 40g<br>• 黄桃果酱 100g<br>• 黄桃晶球 120g<br>• 红茶 100ml</div>
@@ -598,21 +604,19 @@ const trainingData = {
 <div class="step"><span class="step-number">2</span> <strong>Peach Black Tea</strong><br>• Syrup 40g<br>• Yellow peach jam 100g<br>• Yellow peach jelly 120g<br>• Black tea 100ml</div>
 <div class="step"><span class="step-number">3</span> <strong>Lemon Black Tea</strong><br>• Lemon 40g (punch)<br>• Fructose 40g + Syrup 30g<br>• Black tea 120ml</div>` },
         
-        { id: 3, title: "奶茶系列", category: "front", order: 3,
+        { id: 3, title: "奶茶系列",
           contentZh: `<div class="ingredient-list">📋 奶茶系列 SOP</div>
 <div class="step"><span class="step-number">1</span> <strong>经典奶茶</strong><br>• 中杯500ml：糖30g，珍珠/红糖晶球/椰子冻 80g/80g/50g<br>• 大杯700ml：糖30g，珍珠/红糖晶球/椰子冻 160g/160g/150g</div>
 <div class="step"><span class="step-number">2</span> <strong>红糖珍珠奶茶</strong>（中杯500ml）<br>• 红糖糖浆 30g（1.5泵）挂壁<br>• 珍珠 80g</div>
 <div class="step"><span class="step-number">3</span> <strong>太妃榛果奶茶</strong>（中杯500ml）<br>• 太妃榛果糖浆 40g（2泵）<br>• 红糖晶球 80g</div>
-<div class="step"><span class="step-number">4</span> <strong>可可奶茶</strong>（中杯500ml）<br>• 糖浆 10g<br>• 红糖晶球 80g<br>• 巧克力糖浆 40g（2泵）挂壁<br>• 奥利奥碎 10g</div>
-<div class="step"><span class="step-number">5</span> <strong>超级三拼奶茶</strong>（大杯700ml）<br>• 糖浆 30g<br>• 椰子冻 50g<br>• 红糖晶球 80g<br>• 珍珠 80g</div>
-<div class="step"><span class="step-number">6</span> <strong>布蕾奶茶</strong><br>• 中杯500ml：糖浆30g，鸡蛋布丁80g<br>• 大杯700ml：糖浆30g，鸡蛋布丁160g</div>`,
+<div class="step"><span class="step-number">4</span> <strong>可可奶茶</strong>（中杯500ml）<br>• 糖浆 10g<br>• 红糖晶球 80g<br>• 巧克力糖浆 40g（2泵）挂壁<br>• 奥利奥碎 10g</div>`,
           contentEn: `<div class="ingredient-list">📋 Milk Tea Series SOP</div>
 <div class="step"><span class="step-number">1</span> <strong>Classic Milk Tea</strong><br>• Medium 500ml: Sugar 30g, Pearl/Brown sugar jelly/Coconut jelly 80g/80g/50g<br>• Large 700ml: Sugar 30g, Pearl/Brown sugar jelly/Coconut jelly 160g/160g/150g</div>
 <div class="step"><span class="step-number">2</span> <strong>Brown Sugar Bubble Tea</strong> (Medium 500ml)<br>• Brown sugar syrup 30g (1.5 pump) - coat cup wall<br>• Pearl 80g</div>
 <div class="step"><span class="step-number">3</span> <strong>Toffee Hazelnut Milk Tea</strong> (Medium 500ml)<br>• Toffee hazelnut syrup 40g (2 pumps)<br>• Brown sugar jelly 80g</div>
 <div class="step"><span class="step-number">4</span> <strong>O-Coco Milk Tea</strong> (Medium 500ml)<br>• Syrup 10g<br>• Brown sugar jelly 80g<br>• Chocolate syrup 40g (2 pumps) - coat cup wall<br>• Oreo crumbs 10g</div>` },
         
-        { id: 4, title: "咖啡系列", category: "front", order: 4,
+        { id: 4, title: "咖啡系列",
           contentZh: `<div class="ingredient-list">📋 咖啡系列 SOP（中杯500ml）</div>
 <h4>☕ 无冰淇淋咖啡：</h4>
 <div class="step"><span class="step-number">1</span> <strong>冰拿铁</strong><br>• 糖浆 20g<br>• 加冰<br>• 浓缩奶 180g<br>• 咖啡 120g</div>
@@ -628,24 +632,21 @@ const trainingData = {
 <h4>🍦 Coffee with ice cream:</h4>
 <div class="step"><span class="step-number">4</span> <strong>Ice Cream Latte</strong><br>• Syrup 20g<br>• Brown sugar jelly 40g<br>• Concentrate milk and coffee 80g<br>• Stir<br>• Ice cream 90g (3 rounds)</div>` },
         
-        { id: 5, title: "冰淇淋圣代系列", category: "front", order: 5,
+        { id: 5, title: "冰淇淋圣代系列",
           contentZh: `<div class="ingredient-list">📋 冰淇淋圣代系列 SOP（400U杯）</div>
 <div class="step"><span class="step-number">1</span> <strong>超级波波圣代</strong><br>• 红糖糖浆 10g（0.5泵挂壁）<br>• 原味冰淇淋 180g（8圈）<br>• 珍珠 80g</div>
 <div class="step"><span class="step-number">2</span> <strong>超级芒果圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 芒果果酱 50g</div>
 <div class="step"><span class="step-number">3</span> <strong>蜜桃圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 蜜桃果酱 25g<br>• 水晶冻 50g</div>
-<div class="step"><span class="step-number">4</span> <strong>奇异果圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 奇异果酱 25g<br>• 椰子冻 50g</div>
-<div class="step"><span class="step-number">5</span> <strong>草莓脆脆圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 草莓果酱 50g</div>`,
+<div class="step"><span class="step-number">4</span> <strong>奇异果圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 奇异果酱 25g<br>• 椰子冻 50g</div>`,
           contentEn: `<div class="ingredient-list">📋 Ice Cream Sundae Series SOP (400U cup)</div>
 <div class="step"><span class="step-number">1</span> <strong>Super Boba Sundae</strong><br>• Brown sugar syrup 10g (0.5 pump - coat wall)<br>• Original ice cream 180g (8 rounds)<br>• Pearl 80g</div>
 <div class="step"><span class="step-number">2</span> <strong>Super Mango Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Mango jam 50g</div>
 <div class="step"><span class="step-number">3</span> <strong>Peach Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Peach jam 25g<br>• Crystal jelly 50g</div>
-<div class="step"><span class="step-number">4</span> <strong>Kiwi Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Kiwi jam 25g<br>• Coconut jelly 50g</div>
-<div class="step"><span class="step-number">5</span> <strong>Strawberry Crispy Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Strawberry jam 50g</div>` }
+<div class="step"><span class="step-number">4</span> <strong>Kiwi Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Kiwi jam 25g<br>• Coconut jelly 50g</div>` }
     ],
     
-    // 后场培训 - 根据后场.text
     back: [
-        { id: 101, title: "切柠檬", category: "back", order: 1,
+        { id: 101, title: "切柠檬",
           contentZh: `<div class="step"><span class="step-number">1</span> 可选择掐头去尾后用柠檬机切（请小心手）</div>
 <div class="step"><span class="step-number">2</span> 或者用手切柠檬</div>
 <div class="step"><span class="step-number">3</span> 使用后记得清洗柠檬机</div>`,
@@ -653,7 +654,7 @@ const trainingData = {
 <div class="step"><span class="step-number">2</span> Or cut lemons by hand</div>
 <div class="step"><span class="step-number">3</span> Remember to clean the lemon machine after use</div>` },
         
-        { id: 102, title: "煮珍珠", category: "back", order: 2,
+        { id: 102, title: "煮珍珠",
           contentZh: `<div class="step"><span class="step-number">1</span> 倒入4000ml热水，按1号键开始煮</div>
 <div class="step"><span class="step-number">2</span> 听见珍珠锅响后倒入珍珠</div>
 <div class="step"><span class="step-number">3</span> 煮35分钟，焖30分钟，每次用前请检查时间</div>
@@ -667,7 +668,7 @@ const trainingData = {
 <div class="step"><span class="step-number">5</span> Add syrup and mix well</div>
 <div class="ingredient-list">📦 1 bag pearls (500g) with 1 bag syrup</div>` },
         
-        { id: 103, title: "冰淇淋", category: "back", order: 3,
+        { id: 103, title: "冰淇淋",
           contentZh: `<h4>原味冰淇淋：</h4>
 <div class="ingredient-list">📊 8000ml过滤水 + 3kg奶昔粉<br>📊 4000ml水 + 1.5kg粉<br>📊 2000ml水 + 750g粉</div>
 <h4>香芋冰淇淋：</h4>
@@ -679,13 +680,13 @@ const trainingData = {
 <div class="ingredient-list">📊 8000ml filtered water + 3kg taro powder<br>📊 4000ml water + 1.5kg powder<br>📊 2000ml water + 750g powder</div>
 <div class="step">⏲️ Set timer for 18 min and start mixing. When timer rings after 3 min, let rest. Stir each time timer rings</div>` },
         
-        { id: 104, title: "咖啡", category: "back", order: 4,
+        { id: 104, title: "咖啡",
           contentZh: `<div class="ingredient-list">📊 600g热水 + 100g咖啡粉 + 600g冰<br>📊 1200g热水 + 200g咖啡粉 + 1200g冰（以此类推）</div>
 <div class="step">🥄 加入咖啡粉之后搅拌至咖啡粉融化</div>`,
           contentEn: `<div class="ingredient-list">📊 600g hot water + 100g coffee powder + 600g ice<br>📊 1200g hot water + 200g coffee powder + 1200g ice (and so on)</div>
 <div class="step">🥄 After adding coffee powder, stir until dissolved</div>` },
         
-        { id: 105, title: "浓缩奶", category: "back", order: 5,
+        { id: 105, title: "浓缩奶",
           contentZh: `<div class="ingredient-list">📐 奶茶粉 : 热水 : 冰 = 1 : 1 : 1</div>
 <div class="step">1️⃣ 加入热水后加奶粉</div>
 <div class="step">2️⃣ 用搅拌器搅拌至奶粉融化</div>
@@ -695,7 +696,7 @@ const trainingData = {
 <div class="step">2️⃣ Use mixer to stir until dissolved</div>
 <div class="step">3️⃣ Finally add ice</div>` },
         
-        { id: 106, title: "茶类", category: "back", order: 6,
+        { id: 106, title: "茶类",
           contentZh: `<h4>🥤 奶茶</h4>
 <div class="step">📦 1包: 1400g水 → 650g奶茶粉 + 900g冰</div>
 <div class="step">📦 2包: 2800g水 → 1800g冰</div>
@@ -725,7 +726,7 @@ const trainingData = {
 <div class="step">📦 2 bags: 3600g hot water + 2000g ice</div>
 <div class="step">⏲️ Boil then simmer for 12 minutes</div>` },
         
-        { id: 107, title: "后场注意事项", category: "back", order: 7,
+        { id: 107, title: "后场注意事项",
           contentZh: `<div class="warning">⚠️ <strong>随时注意前场是否缺料，及时补充</strong></div>
 <div class="warning">📦 <strong>货架空了请立即补货，切勿将货物放在地上（总部会扣分）</strong></div>
 <div class="warning">🧹 <strong>保持后场整洁，空闲时间多抹货架</strong></div>`,
