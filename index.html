@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>蜜雪冰城培训系统 - Mixue Training</title>
+    <title id="pageTitle">蜜雪冰城培训系统 - Mixue Training</title>
     <style>
         * {
             margin: 0;
@@ -17,6 +17,7 @@
             min-height: 100vh;
         }
 
+        /* 导航栏 */
         .navbar {
             background: white;
             padding: 15px 30px;
@@ -68,6 +69,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .user-name {
@@ -84,12 +86,34 @@
             cursor: pointer;
         }
 
+        .lang-switch {
+            display: flex;
+            gap: 5px;
+        }
+
+        .lang-btn {
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            background: #d6001c;
+            color: white;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
 
+        /* 卡片样式 */
         .card {
             background: white;
             border-radius: 20px;
@@ -111,6 +135,11 @@
         .card h3 {
             color: #333;
             margin-bottom: 10px;
+        }
+
+        .card h4 {
+            color: #d6001c;
+            margin: 15px 0 10px 0;
         }
 
         button {
@@ -135,6 +164,7 @@
             gap: 20px;
         }
 
+        /* 进度条 */
         .progress-bar {
             background: #e9ecef;
             border-radius: 10px;
@@ -149,29 +179,34 @@
             transition: width 0.5s;
         }
 
-        .training-module {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
+        /* 培训模块样式 */
+        .training-card {
+            background: white;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .training-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #d6001c, #ff6b6b);
+            color: white;
+            padding: 18px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .module-info {
-            flex: 1;
-        }
-
-        .module-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .module-status {
-            font-size: 12px;
-            color: #666;
+        .card-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 20px;
         }
 
         .status-badge {
@@ -181,16 +216,59 @@
             font-weight: bold;
         }
 
-        .status-completed {
-            background: #d4edda;
+        .status-badge.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.pending {
+            background: #6c757d;
+            color: white;
+        }
+
+        .card-content {
+            padding: 25px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .card-footer {
+            padding: 15px 25px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .complete-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .complete-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .complete-btn.disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .completed-date {
             color: #28a745;
+            font-size: 13px;
         }
 
-        .status-pending {
-            background: #f8d7da;
-            color: #dc3545;
-        }
-
+        /* 测验样式 */
         .quiz-question {
             margin-bottom: 30px;
             padding: 20px;
@@ -224,16 +302,96 @@
             background: #d4edda;
         }
 
+        /* 步骤样式 */
+        .step {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 10px;
+            border-left: 4px solid #d6001c;
+        }
+
+        .step-number {
+            background: #d6001c;
+            color: white;
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            line-height: 28px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .ingredient-list {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px dashed #ffccd5;
+        }
+
+        /* 进度模块样式 */
+        .progress-module {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .module-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 响应式 */
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
                 gap: 15px;
+                text-align: center;
             }
             .grid-2 {
                 grid-template-columns: 1fr;
             }
             .quiz-options {
                 grid-template-columns: 1fr;
+            }
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            .card-footer {
+                justify-content: center;
             }
         }
 
@@ -245,11 +403,9 @@
             background: #5a6268;
         }
 
-        /* 注册页面样式 */
         .register-link {
             text-align: center;
             margin-top: 15px;
-            font-size: 14px;
         }
 
         .register-link a {
@@ -261,25 +417,33 @@
         .register-link a:hover {
             text-decoration: underline;
         }
+
+        .training-content {
+            line-height: 1.8;
+        }
     </style>
 </head>
 <body>
 
-<div class="navbar" id="navbar">
+<div class="navbar">
     <div class="logo">
         <img src="images/Mixue-Logo.jpg" alt="Mixue Logo" onerror="this.src='https://placehold.co/50x50/d6001c/white?text=M'">
-        <h1>🍦 蜜雪冰城培训系统</h1>
+        <h1 id="brandName">🍦 蜜雪冰城培训系统</h1>
     </div>
     <div class="nav-links" id="navLinks">
-        <a onclick="showPage('dashboard')">首页</a>
-        <a onclick="showPage('front')">前场培训</a>
-        <a onclick="showPage('back')">后场培训</a>
-        <a onclick="showPage('quiz')">知识测验</a>
-        <a onclick="showPage('progress')">学习进度</a>
+        <a onclick="showPage('dashboard')" id="navHome">首页</a>
+        <a onclick="showPage('front')" id="navFront">前场培训</a>
+        <a onclick="showPage('back')" id="navBack">后场培训</a>
+        <a onclick="showPage('quiz')" id="navQuiz">知识测验</a>
+        <a onclick="showPage('progress')" id="navProgress">学习进度</a>
     </div>
-    <div class="user-info" id="userInfo">
+    <div class="user-info">
         <span class="user-name" id="userName"></span>
-        <button class="logout-btn" onclick="logout()">退出登录</button>
+        <div class="lang-switch">
+            <button class="lang-btn" onclick="setLanguage('zh')">中文</button>
+            <button class="lang-btn" onclick="setLanguage('en')">English</button>
+        </div>
+        <button class="logout-btn" id="logoutBtn" onclick="logout()">退出登录</button>
     </div>
 </div>
 
@@ -287,54 +451,314 @@
 
 <script>
 // ============================================
-// 数据定义
+// 多语言文本定义
+// ============================================
+
+const translations = {
+    zh: {
+        pageTitle: "蜜雪冰城培训系统",
+        brandName: "🍦 蜜雪冰城培训系统",
+        navHome: "首页",
+        navFront: "前场培训",
+        navBack: "后场培训",
+        navQuiz: "知识测验",
+        navProgress: "学习进度",
+        logout: "退出登录",
+        loginTitle: "员工登录",
+        username: "用户名",
+        password: "密码",
+        loginBtn: "登录",
+        noAccount: "还没有账号？立即注册",
+        testAccount: "测试账号: admin / 123456",
+        registerTitle: "新员工注册",
+        usernamePlaceholder: "用户名（至少3个字符）",
+        passwordPlaceholder: "密码（至少4个字符）",
+        confirmPassword: "确认密码",
+        registerBtn: "注册",
+        hasAccount: "已有账号？立即登录",
+        welcome: "欢迎",
+        welcomeMessage: "欢迎加入蜜雪冰城大家庭！请按照以下顺序完成培训：",
+        frontDesc: "前台服务、点单收银、冰淇淋制作、饮品SOP",
+        backDesc: "切柠檬 · 煮珍珠 · 冰淇淋 · 咖啡 · 茶饮 · 后场注意事项",
+        quizDesc: "测试你对前场和后场知识的掌握程度",
+        startLearning: "开始学习",
+        startQuiz: "开始测验",
+        viewProgress: "查看进度",
+        overallProgress: "总体进度",
+        markComplete: "✅ 标记为已完成",
+        completed: "已完成",
+        notStarted: "未开始",
+        backToHome: "返回首页",
+        quizTitle: "知识测验",
+        submitQuiz: "提交答案",
+        resetQuiz: "重置答案",
+        quizComplete: "测验完成！",
+        score: "得分",
+        congratulations: "恭喜通过！",
+        tryAgain: "加油，再学习一下再试一次！",
+        progressTitle: "学习进度",
+        frontProgress: "前场培训",
+        backProgress: "后场培训",
+        quizScore: "测验成绩",
+        latestScore: "最新得分",
+        clearProgress: "清除我的进度",
+        confirmClear: "确定要清除您的所有学习进度吗？此操作不可撤销！",
+        progressCleared: "您的进度已清除！",
+        welcomeBack: "欢迎回来",
+        newEmployee: "新员工",
+        completedModules: "已完成模块",
+        alreadyCompleted: "您已经完成过这个培训模块了！"
+    },
+    en: {
+        pageTitle: "Mixue Training System",
+        brandName: "🍦 Mixue Training System",
+        navHome: "Home",
+        navFront: "Front Training",
+        navBack: "Back Training",
+        navQuiz: "Quiz",
+        navProgress: "Progress",
+        logout: "Logout",
+        loginTitle: "Staff Login",
+        username: "Username",
+        password: "Password",
+        loginBtn: "Login",
+        noAccount: "No account? Register",
+        testAccount: "Test account: admin / 123456",
+        registerTitle: "New Staff Registration",
+        usernamePlaceholder: "Username (min 3 characters)",
+        passwordPlaceholder: "Password (min 4 characters)",
+        confirmPassword: "Confirm Password",
+        registerBtn: "Register",
+        hasAccount: "Already have an account? Login",
+        welcome: "Welcome",
+        welcomeMessage: "Welcome to the Mixue family! Please complete the training in the following order:",
+        frontDesc: "Front service, ordering, ice cream making, beverage SOP",
+        backDesc: "Lemon cutting · Pearl cooking · Ice cream · Coffee · Tea · Precautions",
+        quizDesc: "Test your knowledge of front and back area operations",
+        startLearning: "Start Learning",
+        startQuiz: "Start Quiz",
+        viewProgress: "View Progress",
+        overallProgress: "Overall Progress",
+        markComplete: "✅ Mark as Completed",
+        completed: "Completed",
+        notStarted: "Not Started",
+        backToHome: "Back to Home",
+        quizTitle: "Knowledge Quiz",
+        submitQuiz: "Submit Quiz",
+        resetQuiz: "Reset Answers",
+        quizComplete: "Quiz Completed!",
+        score: "Score",
+        congratulations: "Congratulations! You passed!",
+        tryAgain: "Keep going! Review and try again",
+        progressTitle: "Learning Progress",
+        frontProgress: "Front Area Training",
+        backProgress: "Back Area Training",
+        quizScore: "Quiz Score",
+        latestScore: "Latest Score",
+        clearProgress: "Clear My Progress",
+        confirmClear: "Are you sure you want to clear all your progress? This cannot be undone!",
+        progressCleared: "Your progress has been cleared!",
+        welcomeBack: "Welcome back",
+        newEmployee: "New Employee",
+        completedModules: "Completed Modules",
+        alreadyCompleted: "You have already completed this module!"
+    }
+};
+
+// ============================================
+// 培训数据（完整版，根据后场.text和前场.md）
 // ============================================
 
 const trainingData = {
+    // 前场培训 - 饮品SOP
     front: [
-        { id: 1, title: "前台接待礼仪", content: "微笑问候顾客，使用标准欢迎语'欢迎光临蜜雪冰城'，主动询问顾客需求。保持仪容整洁，佩戴工牌。" },
-        { id: 2, title: "点单收银流程", content: "准确记录顾客点单，重复确认订单，熟练使用收银系统，快速找零。推荐当季新品和套餐。" },
-        { id: 3, title: "冰淇淋制作标准", content: "原味：8000ml过滤水+3kg奶昔粉；香芋：8000ml过滤水+3kg香芋奶昔粉。计时器18分钟搅拌，每3分钟搅拌一次。" },
-        { id: 4, title: "绿茶系列", content: "原味茉莉绿茶：糖浆60g + 茉莉绿茶240ml + 加冰加水<br>蜜桃茉莉绿茶：糖浆40g + 桃子果酱75g + 黄桃晶球120g + 茉莉绿茶120ml" },
-        { id: 5, title: "红茶系列", content: "原味红茶：糖浆50g + 红茶200ml + 加冰加水<br>蜜桃红茶：糖浆40g + 黄桃果酱100g + 黄桃晶球120g + 红茶100ml" },
-        { id: 6, title: "奶茶系列", content: "经典奶茶(中杯)：糖30g + 珍珠/红糖晶球/椰子冻 80g/80g/50g<br>红糖珍珠奶茶：红糖糖浆30g挂壁 + 珍珠80g" },
-        { id: 7, title: "咖啡系列", content: "冰拿铁：糖浆20g + 加冰 + 浓缩奶180g + 咖啡120g<br>红糖拿铁：红糖糖浆40g挂壁 + 加冰 + 浓缩奶160g + 咖啡100g" },
-        { id: 8, title: "冰淇淋圣代系列", content: "超级波波圣代：红糖糖浆10g挂壁 + 原味冰淇淋180g + 珍珠80g<br>超级芒果圣代：原味冰淇淋180g + 芒果果酱50g" }
+        { id: 1, title: "绿茶系列", category: "front", order: 1,
+          contentZh: `<div class="ingredient-list">📋 绿茶系列 SOP（700ml杯）</div>
+<div class="step"><span class="step-number">1</span> <strong>原味茉莉绿茶</strong><br>• 糖浆 60g<br>• 茉莉绿茶 240ml<br>• 加冰加水至满杯</div>
+<div class="step"><span class="step-number">2</span> <strong>蜜桃茉莉绿茶</strong><br>• 糖浆 40g<br>• 桃子果酱 75g<br>• 黄桃晶球 120g<br>• 茉莉绿茶 120ml<br>• 加冰加水至满杯</div>
+<div class="step"><span class="step-number">3</span> <strong>奇异果茉莉绿茶</strong><br>• 果糖 20g + 糖浆 40g<br>• 椰子冻 50g<br>• 奇异果酱 75g<br>• 黄桃晶球 40g<br>• 茉莉绿茶 120ml<br>• 加冰加水至满杯</div>
+<div class="step"><span class="step-number">4</span> <strong>草莓蜜桃茶</strong><br>• 糖浆 40g<br>• 草莓果酱 75g<br>• 蜜桃果酱 25g<br>• 水晶冻 50g<br>• 茉莉绿茶 120ml</div>
+<div class="step"><span class="step-number">5</span> <strong>草莓波波</strong><br>• 柠檬片 40g（不捶打）<br>• 糖浆 40g<br>• 草莓果酱 100g<br>• 水晶冻 50g<br>• 茉莉绿茶 120ml</div>
+<div class="step"><span class="step-number">6</span> <strong>柠檬茉莉绿茶</strong><br>• 柠檬 40g（捶打）<br>• 果糖 40g + 糖浆 30g<br>• 茉莉绿茶 160ml</div>`,
+          contentEn: `<div class="ingredient-list">📋 Jasmine Tea Series SOP (700ml cup)</div>
+<div class="step"><span class="step-number">1</span> <strong>Original Jasmine Tea</strong><br>• Syrup 60g<br>• Jasmine tea 240ml<br>• Add ice and water to fill</div>
+<div class="step"><span class="step-number">2</span> <strong>Peach Jasmine Tea</strong><br>• Syrup 40g<br>• Peach jam 75g<br>• Yellow peach jelly 120g<br>• Jasmine tea 120ml</div>
+<div class="step"><span class="step-number">3</span> <strong>Kiwi Jasmine Tea</strong><br>• Fructose 20g + Syrup 40g<br>• Coconut jelly 50g<br>• Kiwi jam 75g<br>• Yellow peach jelly 40g<br>• Jasmine tea 120ml</div>
+<div class="step"><span class="step-number">4</span> <strong>Strawberry Peach</strong><br>• Syrup 40g<br>• Strawberry jam 75g<br>• Peach jam 25g<br>• Crystal jelly 50g<br>• Jasmine tea 120ml</div>
+<div class="step"><span class="step-number">5</span> <strong>Strawberry Bobo</strong><br>• Lemon 40g (no punch)<br>• Syrup 40g<br>• Strawberry jam 100g<br>• Crystal jelly 50g<br>• Jasmine tea 120ml</div>
+<div class="step"><span class="step-number">6</span> <strong>Lemon Jasmine Tea</strong><br>• Lemon 40g (punch)<br>• Fructose 40g + Syrup 30g<br>• Jasmine tea 160ml</div>` },
+        
+        { id: 2, title: "红茶系列", category: "front", order: 2,
+          contentZh: `<div class="ingredient-list">📋 红茶系列 SOP（700ml杯）</div>
+<div class="step"><span class="step-number">1</span> <strong>原味红茶</strong><br>• 糖浆 50g<br>• 红茶 200ml<br>• 加冰加水至满杯</div>
+<div class="step"><span class="step-number">2</span> <strong>蜜桃红茶</strong><br>• 糖浆 40g<br>• 黄桃果酱 100g<br>• 黄桃晶球 120g<br>• 红茶 100ml</div>
+<div class="step"><span class="step-number">3</span> <strong>柠檬红茶</strong><br>• 柠檬 40g（捶打）<br>• 果糖 40g + 糖浆 30g<br>• 红茶 120ml</div>`,
+          contentEn: `<div class="ingredient-list">📋 Black Tea Series SOP (700ml cup)</div>
+<div class="step"><span class="step-number">1</span> <strong>Original Black Tea</strong><br>• Syrup 50g<br>• Black tea 200ml<br>• Add ice and water to fill</div>
+<div class="step"><span class="step-number">2</span> <strong>Peach Black Tea</strong><br>• Syrup 40g<br>• Yellow peach jam 100g<br>• Yellow peach jelly 120g<br>• Black tea 100ml</div>
+<div class="step"><span class="step-number">3</span> <strong>Lemon Black Tea</strong><br>• Lemon 40g (punch)<br>• Fructose 40g + Syrup 30g<br>• Black tea 120ml</div>` },
+        
+        { id: 3, title: "奶茶系列", category: "front", order: 3,
+          contentZh: `<div class="ingredient-list">📋 奶茶系列 SOP</div>
+<div class="step"><span class="step-number">1</span> <strong>经典奶茶</strong><br>• 中杯500ml：糖30g，珍珠/红糖晶球/椰子冻 80g/80g/50g<br>• 大杯700ml：糖30g，珍珠/红糖晶球/椰子冻 160g/160g/150g</div>
+<div class="step"><span class="step-number">2</span> <strong>红糖珍珠奶茶</strong>（中杯500ml）<br>• 红糖糖浆 30g（1.5泵）挂壁<br>• 珍珠 80g</div>
+<div class="step"><span class="step-number">3</span> <strong>太妃榛果奶茶</strong>（中杯500ml）<br>• 太妃榛果糖浆 40g（2泵）<br>• 红糖晶球 80g</div>
+<div class="step"><span class="step-number">4</span> <strong>可可奶茶</strong>（中杯500ml）<br>• 糖浆 10g<br>• 红糖晶球 80g<br>• 巧克力糖浆 40g（2泵）挂壁<br>• 奥利奥碎 10g</div>
+<div class="step"><span class="step-number">5</span> <strong>超级三拼奶茶</strong>（大杯700ml）<br>• 糖浆 30g<br>• 椰子冻 50g<br>• 红糖晶球 80g<br>• 珍珠 80g</div>
+<div class="step"><span class="step-number">6</span> <strong>布蕾奶茶</strong><br>• 中杯500ml：糖浆30g，鸡蛋布丁80g<br>• 大杯700ml：糖浆30g，鸡蛋布丁160g</div>`,
+          contentEn: `<div class="ingredient-list">📋 Milk Tea Series SOP</div>
+<div class="step"><span class="step-number">1</span> <strong>Classic Milk Tea</strong><br>• Medium 500ml: Sugar 30g, Pearl/Brown sugar jelly/Coconut jelly 80g/80g/50g<br>• Large 700ml: Sugar 30g, Pearl/Brown sugar jelly/Coconut jelly 160g/160g/150g</div>
+<div class="step"><span class="step-number">2</span> <strong>Brown Sugar Bubble Tea</strong> (Medium 500ml)<br>• Brown sugar syrup 30g (1.5 pump) - coat cup wall<br>• Pearl 80g</div>
+<div class="step"><span class="step-number">3</span> <strong>Toffee Hazelnut Milk Tea</strong> (Medium 500ml)<br>• Toffee hazelnut syrup 40g (2 pumps)<br>• Brown sugar jelly 80g</div>
+<div class="step"><span class="step-number">4</span> <strong>O-Coco Milk Tea</strong> (Medium 500ml)<br>• Syrup 10g<br>• Brown sugar jelly 80g<br>• Chocolate syrup 40g (2 pumps) - coat cup wall<br>• Oreo crumbs 10g</div>` },
+        
+        { id: 4, title: "咖啡系列", category: "front", order: 4,
+          contentZh: `<div class="ingredient-list">📋 咖啡系列 SOP（中杯500ml）</div>
+<h4>☕ 无冰淇淋咖啡：</h4>
+<div class="step"><span class="step-number">1</span> <strong>冰拿铁</strong><br>• 糖浆 20g<br>• 加冰<br>• 浓缩奶 180g<br>• 咖啡 120g</div>
+<div class="step"><span class="step-number">2</span> <strong>红糖拿铁</strong><br>• 红糖糖浆 40g（挂壁）<br>• 加冰<br>• 浓缩奶 160g<br>• 咖啡 100g</div>
+<div class="step"><span class="step-number">3</span> <strong>太妃榛果拿铁</strong><br>• 太妃榛果糖浆 40g<br>• 加冰<br>• 浓缩奶 160g<br>• 咖啡 100g</div>
+<h4>🍦 冰淇淋咖啡：</h4>
+<div class="step"><span class="step-number">4</span> <strong>冰淇淋拿铁</strong><br>• 糖浆 20g<br>• 红糖晶球 40g<br>• 浓缩奶和咖啡 80g（混合）<br>• 搅拌<br>• 冰淇淋 90g（3圈）</div>`,
+          contentEn: `<div class="ingredient-list">📋 Coffee Series SOP (Medium 500ml)</div>
+<h4>☕ Coffee without ice cream:</h4>
+<div class="step"><span class="step-number">1</span> <strong>Iced Latte</strong><br>• Syrup 20g<br>• Add ice<br>• Concentrate milk 180g<br>• Coffee 120g</div>
+<div class="step"><span class="step-number">2</span> <strong>Brown Sugar Latte</strong><br>• Brown sugar syrup 40g (coat wall)<br>• Add ice<br>• Concentrate milk 160g<br>• Coffee 100g</div>
+<div class="step"><span class="step-number">3</span> <strong>Toffee Hazelnut Latte</strong><br>• Toffee hazelnut syrup 40g<br>• Add ice<br>• Concentrate milk 160g<br>• Coffee 100g</div>
+<h4>🍦 Coffee with ice cream:</h4>
+<div class="step"><span class="step-number">4</span> <strong>Ice Cream Latte</strong><br>• Syrup 20g<br>• Brown sugar jelly 40g<br>• Concentrate milk and coffee 80g<br>• Stir<br>• Ice cream 90g (3 rounds)</div>` },
+        
+        { id: 5, title: "冰淇淋圣代系列", category: "front", order: 5,
+          contentZh: `<div class="ingredient-list">📋 冰淇淋圣代系列 SOP（400U杯）</div>
+<div class="step"><span class="step-number">1</span> <strong>超级波波圣代</strong><br>• 红糖糖浆 10g（0.5泵挂壁）<br>• 原味冰淇淋 180g（8圈）<br>• 珍珠 80g</div>
+<div class="step"><span class="step-number">2</span> <strong>超级芒果圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 芒果果酱 50g</div>
+<div class="step"><span class="step-number">3</span> <strong>蜜桃圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 蜜桃果酱 25g<br>• 水晶冻 50g</div>
+<div class="step"><span class="step-number">4</span> <strong>奇异果圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 奇异果酱 25g<br>• 椰子冻 50g</div>
+<div class="step"><span class="step-number">5</span> <strong>草莓脆脆圣代</strong><br>• 原味冰淇淋 180g（8圈）<br>• 草莓果酱 50g</div>`,
+          contentEn: `<div class="ingredient-list">📋 Ice Cream Sundae Series SOP (400U cup)</div>
+<div class="step"><span class="step-number">1</span> <strong>Super Boba Sundae</strong><br>• Brown sugar syrup 10g (0.5 pump - coat wall)<br>• Original ice cream 180g (8 rounds)<br>• Pearl 80g</div>
+<div class="step"><span class="step-number">2</span> <strong>Super Mango Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Mango jam 50g</div>
+<div class="step"><span class="step-number">3</span> <strong>Peach Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Peach jam 25g<br>• Crystal jelly 50g</div>
+<div class="step"><span class="step-number">4</span> <strong>Kiwi Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Kiwi jam 25g<br>• Coconut jelly 50g</div>
+<div class="step"><span class="step-number">5</span> <strong>Strawberry Crispy Sundae</strong><br>• Original ice cream 180g (8 rounds)<br>• Strawberry jam 50g</div>` }
     ],
+    
+    // 后场培训 - 根据后场.text
     back: [
-        { id: 101, title: "切柠檬标准流程", content: "可选择掐头去尾后用柠檬机切（请小心手）<br>或者用手切柠檬<br>使用后记得清洗柠檬机" },
-        { id: 102, title: "煮珍珠标准流程", content: "倒入4000ml热水，按1号键开始煮<br>听见珍珠锅响后倒入珍珠<br>煮35分钟，焖30分钟<br>珍珠煮好后过滤，用过滤水清洗至粒粒分明" },
-        { id: 103, title: "冰淇淋制作详细流程", content: "原味：8000ml过滤水+3kg奶昔粉<br>香芋：8000ml过滤水+3kg香芋奶昔粉<br>计时器选18分钟开始搅拌" },
-        { id: 104, title: "咖啡制作标准", content: "600g热水+100g咖啡粉+600g冰<br>1200g热水+200g咖啡粉+1200g冰<br>热水和冰的比例1:1" },
-        { id: 105, title: "浓缩奶制作", content: "奶茶粉:热水:冰 = 1:1:1<br>加入热水后加奶粉<br>用搅拌器搅拌至奶粉融化" },
-        { id: 106, title: "茶类制作标准", content: "奶茶：1400g水+650g奶茶粉+900g冰<br>绿茶：1500g热水+一包绿茶+1000g冰，焖6分钟" },
-        { id: 107, title: "后场注意事项", content: "随时注意前场是否缺料，及时补充<br>货架空了请立即补货，切勿将货物放在地上<br>保持后场整洁，空闲时间多抹货架" }
+        { id: 101, title: "切柠檬", category: "back", order: 1,
+          contentZh: `<div class="step"><span class="step-number">1</span> 可选择掐头去尾后用柠檬机切（请小心手）</div>
+<div class="step"><span class="step-number">2</span> 或者用手切柠檬</div>
+<div class="step"><span class="step-number">3</span> 使用后记得清洗柠檬机</div>`,
+          contentEn: `<div class="step"><span class="step-number">1</span> Cut off both ends and use lemon machine (be careful)</div>
+<div class="step"><span class="step-number">2</span> Or cut lemons by hand</div>
+<div class="step"><span class="step-number">3</span> Remember to clean the lemon machine after use</div>` },
+        
+        { id: 102, title: "煮珍珠", category: "back", order: 2,
+          contentZh: `<div class="step"><span class="step-number">1</span> 倒入4000ml热水，按1号键开始煮</div>
+<div class="step"><span class="step-number">2</span> 听见珍珠锅响后倒入珍珠</div>
+<div class="step"><span class="step-number">3</span> 煮35分钟，焖30分钟，每次用前请检查时间</div>
+<div class="step"><span class="step-number">4</span> 珍珠煮好后过滤，用过滤水清洗至粒粒分明</div>
+<div class="step"><span class="step-number">5</span> 清洗完成加入糖浆搅拌均匀即可使用</div>
+<div class="ingredient-list">📦 1包珍珠（500g）配1包糖浆</div>`,
+          contentEn: `<div class="step"><span class="step-number">1</span> Pour 4000ml hot water, press button 1 to heat</div>
+<div class="step"><span class="step-number">2</span> When pearl cooker beeps, add pearls</div>
+<div class="step"><span class="step-number">3</span> Cook 35 min, simmer 30 min. Check time before each use</div>
+<div class="step"><span class="step-number">4</span> After cooking, filter and rinse with filtered water until separate</div>
+<div class="step"><span class="step-number">5</span> Add syrup and mix well</div>
+<div class="ingredient-list">📦 1 bag pearls (500g) with 1 bag syrup</div>` },
+        
+        { id: 103, title: "冰淇淋", category: "back", order: 3,
+          contentZh: `<h4>原味冰淇淋：</h4>
+<div class="ingredient-list">📊 8000ml过滤水 + 3kg奶昔粉<br>📊 4000ml水 + 1.5kg粉<br>📊 2000ml水 + 750g粉</div>
+<h4>香芋冰淇淋：</h4>
+<div class="ingredient-list">📊 8000ml过滤水 + 3kg香芋奶昔粉<br>📊 4000ml水 + 1.5kg粉<br>📊 2000ml水 + 750g粉</div>
+<div class="step">⏲️ 计时器选18分钟开始搅拌，3分钟后计时器响就静止，计时器每响一次就搅拌一下</div>`,
+          contentEn: `<h4>Original Ice Cream:</h4>
+<div class="ingredient-list">📊 8000ml filtered water + 3kg milkshake powder<br>📊 4000ml water + 1.5kg powder<br>📊 2000ml water + 750g powder</div>
+<h4>Taro Ice Cream:</h4>
+<div class="ingredient-list">📊 8000ml filtered water + 3kg taro powder<br>📊 4000ml water + 1.5kg powder<br>📊 2000ml water + 750g powder</div>
+<div class="step">⏲️ Set timer for 18 min and start mixing. When timer rings after 3 min, let rest. Stir each time timer rings</div>` },
+        
+        { id: 104, title: "咖啡", category: "back", order: 4,
+          contentZh: `<div class="ingredient-list">📊 600g热水 + 100g咖啡粉 + 600g冰<br>📊 1200g热水 + 200g咖啡粉 + 1200g冰（以此类推）</div>
+<div class="step">🥄 加入咖啡粉之后搅拌至咖啡粉融化</div>`,
+          contentEn: `<div class="ingredient-list">📊 600g hot water + 100g coffee powder + 600g ice<br>📊 1200g hot water + 200g coffee powder + 1200g ice (and so on)</div>
+<div class="step">🥄 After adding coffee powder, stir until dissolved</div>` },
+        
+        { id: 105, title: "浓缩奶", category: "back", order: 5,
+          contentZh: `<div class="ingredient-list">📐 奶茶粉 : 热水 : 冰 = 1 : 1 : 1</div>
+<div class="step">1️⃣ 加入热水后加奶粉</div>
+<div class="step">2️⃣ 用搅拌器搅拌至奶粉融化</div>
+<div class="step">3️⃣ 最后加冰</div>`,
+          contentEn: `<div class="ingredient-list">📐 Milk tea powder : Hot water : Ice = 1 : 1 : 1</div>
+<div class="step">1️⃣ Add hot water, then add milk powder</div>
+<div class="step">2️⃣ Use mixer to stir until dissolved</div>
+<div class="step">3️⃣ Finally add ice</div>` },
+        
+        { id: 106, title: "茶类", category: "back", order: 6,
+          contentZh: `<h4>🥤 奶茶</h4>
+<div class="step">📦 1包: 1400g水 → 650g奶茶粉 + 900g冰</div>
+<div class="step">📦 2包: 2800g水 → 1800g冰</div>
+<div class="step">📦 3包: 4200g水 → 2700g冰</div>
+<hr>
+<h4>🍵 绿茶</h4>
+<div class="step">📦 1包: 1500g热水 + 1000g冰</div>
+<div class="step">⚠️ 注意：茶叶在热水上面，不是在底下</div>
+<div class="step">⏲️ 计时6分钟</div>
+<hr>
+<h4>🫖 红茶</h4>
+<div class="step">📦 1包: 1800g热水 + 1000g冰</div>
+<div class="step">📦 2包: 3600g热水 + 2000g冰</div>
+<div class="step">⏲️ 煮沸腾后焖12分钟</div>`,
+          contentEn: `<h4>🥤 Milk Tea</h4>
+<div class="step">📦 1 bag: 1400g water → 650g powder + 900g ice</div>
+<div class="step">📦 2 bags: 2800g water → 1800g ice</div>
+<div class="step">📦 3 bags: 4200g water → 2700g ice</div>
+<hr>
+<h4>🍵 Green Tea</h4>
+<div class="step">📦 1 bag: 1500g hot water + 1000g ice</div>
+<div class="step">⚠️ Note: Tea leaves on top of water, not at bottom</div>
+<div class="step">⏲️ Timer: 6 minutes</div>
+<hr>
+<h4>🫖 Black Tea</h4>
+<div class="step">📦 1 bag: 1800g hot water + 1000g ice</div>
+<div class="step">📦 2 bags: 3600g hot water + 2000g ice</div>
+<div class="step">⏲️ Boil then simmer for 12 minutes</div>` },
+        
+        { id: 107, title: "后场注意事项", category: "back", order: 7,
+          contentZh: `<div class="warning">⚠️ <strong>随时注意前场是否缺料，及时补充</strong></div>
+<div class="warning">📦 <strong>货架空了请立即补货，切勿将货物放在地上（总部会扣分）</strong></div>
+<div class="warning">🧹 <strong>保持后场整洁，空闲时间多抹货架</strong></div>`,
+          contentEn: `<div class="warning">⚠️ <strong>Always monitor front area supplies, replenish promptly</strong></div>
+<div class="warning">📦 <strong>Restock immediately when shelves empty. Never place goods on floor</strong></div>
+<div class="warning">🧹 <strong>Keep back area clean, wipe shelves in free time</strong></div>` }
     ]
 };
 
+// 测验数据
 const quizData = [
-    { id: 1, question: "蜜雪冰城成立于哪一年？", options: ["1995年", "1996年", "1997年", "1998年"], answer: "C" },
-    { id: 2, question: "原味冰淇淋的标准配方是？", options: ["6000ml水+2kg粉", "7000ml水+2.5kg粉", "8000ml水+3kg粉", "9000ml水+3.5kg粉"], answer: "C" },
-    { id: 3, question: "煮珍珠需要煮多少分钟？", options: ["25分钟", "30分钟", "35分钟", "40分钟"], answer: "C" },
-    { id: 4, question: "珍珠煮好后需要焖多久？", options: ["15分钟", "20分钟", "25分钟", "30分钟"], answer: "D" },
-    { id: 5, question: "绿茶的茶叶应该放在哪里？", options: ["热水底下", "热水上面", "冷水里面", "随意放置"], answer: "B" },
-    { id: 6, question: "后场货物可以放在地上吗？", options: ["可以", "不可以", "紧急时可以", "主管同意可以"], answer: "B" },
-    { id: 7, question: "咖啡制作中，热水和冰的比例是？", options: ["1:2", "2:1", "1:1", "1:3"], answer: "C" },
-    { id: 8, question: "使用柠檬机后需要做什么？", options: ["直接放回", "清洗柠檬机", "不管它", "拆解机器"], answer: "B" }
+    { id: 1, questionZh: "蜜雪冰城成立于哪一年？", questionEn: "Which year was Mixue founded?", optionsZh: ["1995年", "1996年", "1997年", "1998年"], optionsEn: ["1995", "1996", "1997", "1998"], answer: "C" },
+    { id: 2, questionZh: "原味冰淇淋的标准配方是？", questionEn: "What is the standard recipe for original ice cream?", optionsZh: ["6000ml水+2kg粉", "7000ml水+2.5kg粉", "8000ml水+3kg粉", "9000ml水+3.5kg粉"], optionsEn: ["6000ml water+2kg powder", "7000ml water+2.5kg powder", "8000ml water+3kg powder", "9000ml water+3.5kg powder"], answer: "C" },
+    { id: 3, questionZh: "煮珍珠需要煮多少分钟？", questionEn: "How many minutes to cook pearls?", optionsZh: ["25分钟", "30分钟", "35分钟", "40分钟"], optionsEn: ["25 min", "30 min", "35 min", "40 min"], answer: "C" },
+    { id: 4, questionZh: "珍珠煮好后需要焖多久？", questionEn: "How long to simmer pearls after cooking?", optionsZh: ["15分钟", "20分钟", "25分钟", "30分钟"], optionsEn: ["15 min", "20 min", "25 min", "30 min"], answer: "D" },
+    { id: 5, questionZh: "绿茶的茶叶应该放在哪里？", questionEn: "Where should green tea leaves be placed?", optionsZh: ["热水底下", "热水上面", "冷水里面", "随意放置"], optionsEn: ["Under hot water", "On top of hot water", "In cold water", "Anywhere"], answer: "B" },
+    { id: 6, questionZh: "后场货物可以放在地上吗？", questionEn: "Can back area goods be placed on the floor?", optionsZh: ["可以", "不可以", "紧急时可以", "主管同意可以"], optionsEn: ["Yes", "No", "In emergency", "With supervisor approval"], answer: "B" },
+    { id: 7, questionZh: "咖啡制作中，热水和冰的比例是？", questionEn: "What is the ratio of hot water to ice in coffee making?", optionsZh: ["1:2", "2:1", "1:1", "1:3"], optionsEn: ["1:2", "2:1", "1:1", "1:3"], answer: "C" },
+    { id: 8, questionZh: "使用柠檬机后需要做什么？", questionEn: "What should you do after using the lemon machine?", optionsZh: ["直接放回", "清洗柠檬机", "不管它", "拆解机器"], optionsEn: ["Put it back", "Clean it", "Ignore it", "Disassemble it"], answer: "B" }
 ];
 
-// 预定义用户（实际使用中会动态添加）
+// ============================================
+// 用户管理
+// ============================================
+
 let users = {
-    'admin': { password: '123456', registerDate: '2024-01-01' },
-    'staff1': { password: '123456', registerDate: '2024-01-01' },
-    'staff2': { password: '123456', registerDate: '2024-01-01' }
+    'admin': { password: '123456' },
+    'staff1': { password: '123456' },
+    'staff2': { password: '123456' }
 };
 
-// ============================================
-// 全局状态
-// ============================================
-
 let currentUser = null;
+let currentLang = localStorage.getItem('mixue_language') || 'zh';
 let currentUserProgress = {
     completedTrainings: [],
     quizAnswers: {},
@@ -342,179 +766,85 @@ let currentUserProgress = {
 };
 
 // ============================================
-// 存储操作 - 按账号独立存储
+// 存储操作
 // ============================================
 
-// 保存所有用户数据到 localStorage
-function saveAllUsersData() {
-    const allData = {
-        users: users,
-        userProgress: {}
-    };
-    
-    // 为每个用户保存进度数据
+function saveAllData() {
+    const data = { users, userProgress: {} };
     for (let username in users) {
         if (username === currentUser?.username && currentUserProgress) {
-            allData.userProgress[username] = currentUserProgress;
+            data.userProgress[username] = currentUserProgress;
         } else {
-            // 从 localStorage 读取其他用户的进度
             const saved = localStorage.getItem('mixue_training_data');
             if (saved) {
-                const data = JSON.parse(saved);
-                if (data.userProgress && data.userProgress[username]) {
-                    allData.userProgress[username] = data.userProgress[username];
-                } else {
-                    allData.userProgress[username] = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
-                }
+                const old = JSON.parse(saved);
+                data.userProgress[username] = old.userProgress?.[username] || { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
             } else {
-                allData.userProgress[username] = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
+                data.userProgress[username] = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
             }
         }
     }
-    
-    localStorage.setItem('mixue_training_data', JSON.stringify(allData));
-    console.log('✅ 所有用户数据已保存');
+    localStorage.setItem('mixue_training_data', JSON.stringify(data));
 }
 
-// 加载当前用户的数据
 function loadCurrentUserData() {
     if (!currentUser) return;
-    
     const saved = localStorage.getItem('mixue_training_data');
-    console.log('加载用户数据:', currentUser.username);
-    
     if (saved) {
         try {
             const data = JSON.parse(saved);
-            if (data.userProgress && data.userProgress[currentUser.username]) {
-                currentUserProgress = data.userProgress[currentUser.username];
-                console.log('✅ 加载用户进度成功:', currentUserProgress);
-            } else {
-                initEmptyProgress();
-                console.log('新用户，初始化空进度');
-            }
-            
-            // 加载用户列表（如果有新注册的用户）
-            if (data.users) {
-                users = data.users;
-            }
+            currentUserProgress = data.userProgress?.[currentUser.username] || { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
+            if (data.users) users = data.users;
         } catch(e) {
-            console.error('数据解析失败:', e);
-            initEmptyProgress();
+            currentUserProgress = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
         }
-    } else {
-        initEmptyProgress();
     }
-    
-    // 保存当前用户数据
     saveCurrentUserData();
 }
 
-// 保存当前用户的数据
 function saveCurrentUserData() {
     if (!currentUser) return;
+    saveAllData();
+}
+
+function isTrainingCompleted(id) {
+    return currentUserProgress.completedTrainings.includes(id);
+}
+
+// ============================================
+// 语言设置
+// ============================================
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('mixue_language', lang);
+    document.getElementById('htmlRoot').setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+    document.title = translations[lang].pageTitle;
+    document.getElementById('brandName').innerHTML = translations[lang].brandName;
+    document.getElementById('navHome').innerHTML = translations[lang].navHome;
+    document.getElementById('navFront').innerHTML = translations[lang].navFront;
+    document.getElementById('navBack').innerHTML = translations[lang].navBack;
+    document.getElementById('navQuiz').innerHTML = translations[lang].navQuiz;
+    document.getElementById('navProgress').innerHTML = translations[lang].navProgress;
+    document.getElementById('logoutBtn').innerHTML = translations[lang].logout;
     
-    const saved = localStorage.getItem('mixue_training_data');
-    let allData = { users: users, userProgress: {} };
-    
-    if (saved) {
-        try {
-            allData = JSON.parse(saved);
-            if (!allData.userProgress) allData.userProgress = {};
-        } catch(e) {
-            allData = { users: users, userProgress: {} };
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if ((lang === 'zh' && btn.innerText === '中文') || (lang === 'en' && btn.innerText === 'English')) {
+            btn.classList.add('active');
         }
-    }
+    });
     
-    // 更新当前用户的进度
-    allData.userProgress[currentUser.username] = currentUserProgress;
-    allData.users = users;
-    
-    localStorage.setItem('mixue_training_data', JSON.stringify(allData));
-    console.log('✅ 当前用户数据已保存:', currentUser.username, currentUserProgress);
+    const currentPage = document.querySelector('.nav-links a.active')?.innerText;
+    if (currentPage === translations.zh.navHome || currentPage === translations.en.navHome) showPage('dashboard');
+    else if (currentPage === translations.zh.navFront || currentPage === translations.en.navFront) showPage('front');
+    else if (currentPage === translations.zh.navBack || currentPage === translations.en.navBack) showPage('back');
+    else if (currentPage === translations.zh.navQuiz || currentPage === translations.en.navQuiz) showPage('quiz');
+    else if (currentPage === translations.zh.navProgress || currentPage === translations.en.navProgress) showPage('progress');
+    else showPage('dashboard');
 }
 
-function initEmptyProgress() {
-    currentUserProgress = {
-        completedTrainings: [],
-        quizAnswers: {},
-        quizScore: 0
-    };
-}
-
-function clearCurrentUserData() {
-    if (!currentUser) return;
-    initEmptyProgress();
-    saveCurrentUserData();
-    console.log('已清除用户数据:', currentUser.username);
-}
-
-// ============================================
-// 用户管理
-// ============================================
-
-function registerUser(username, password) {
-    if (users[username]) {
-        return { success: false, message: '用户名已存在！' };
-    }
-    
-    if (username.length < 3) {
-        return { success: false, message: '用户名至少3个字符！' };
-    }
-    
-    if (password.length < 4) {
-        return { success: false, message: '密码至少4个字符！' };
-    }
-    
-    users[username] = { 
-        password: password,
-        registerDate: new Date().toISOString()
-    };
-    
-    saveCurrentUserData();
-    return { success: true, message: '注册成功！' };
-}
-
-function loginUser(username, password) {
-    if (!users[username]) {
-        return { success: false, message: '用户名不存在！' };
-    }
-    
-    if (users[username].password !== password) {
-        return { success: false, message: '密码错误！' };
-    }
-    
-    currentUser = { username: username, loginTime: new Date().toISOString() };
-    loadCurrentUserData();
-    saveCurrentUserData();
-    
-    return { success: true, message: '登录成功！' };
-}
-
-function logoutUser() {
-    if (currentUser) {
-        saveCurrentUserData();
-    }
-    currentUser = null;
-    currentUserProgress = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
-}
-
-// ============================================
-// 辅助函数
-// ============================================
-
-function isTrainingCompleted(trainingId) {
-    return currentUserProgress.completedTrainings.includes(trainingId);
-}
-
-function updateUserDisplay() {
-    const userNameSpan = document.getElementById('userName');
-    if (currentUser) {
-        userNameSpan.textContent = `👋 ${currentUser.username}`;
-    } else {
-        userNameSpan.textContent = '';
-    }
-}
+function t(key) { return translations[currentLang][key] || key; }
 
 // ============================================
 // 页面渲染
@@ -526,25 +856,16 @@ function showPage(page) {
         return;
     }
     
-    // 更新导航栏激活状态
-    const links = document.querySelectorAll('.nav-links a');
-    links.forEach(link => link.classList.remove('active'));
-    const activeLink = Array.from(links).find(link => link.textContent.includes(getPageChineseName(page)));
+    document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+    const pageMap = { dashboard: t('navHome'), front: t('navFront'), back: t('navBack'), quiz: t('navQuiz'), progress: t('navProgress') };
+    const activeLink = Array.from(document.querySelectorAll('.nav-links a')).find(a => a.innerText === pageMap[page]);
     if (activeLink) activeLink.classList.add('active');
     
-    switch(page) {
-        case 'dashboard': renderDashboard(); break;
-        case 'front': renderFrontTraining(); break;
-        case 'back': renderBackTraining(); break;
-        case 'quiz': renderQuiz(); break;
-        case 'progress': renderProgress(); break;
-        default: renderDashboard();
-    }
-}
-
-function getPageChineseName(page) {
-    const names = { dashboard: '首页', front: '前场培训', back: '后场培训', quiz: '知识测验', progress: '学习进度' };
-    return names[page] || '首页';
+    if (page === 'dashboard') renderDashboard();
+    else if (page === 'front') renderFrontTraining();
+    else if (page === 'back') renderBackTraining();
+    else if (page === 'quiz') renderQuiz();
+    else if (page === 'progress') renderProgress();
 }
 
 function renderDashboard() {
@@ -556,138 +877,90 @@ function renderDashboard() {
     
     const html = `
         <div class="card">
-            <h2>👋 欢迎 ${currentUser?.username || '新员工'}！</h2>
-            <p>欢迎加入蜜雪冰城大家庭！请按照以下顺序完成培训：</p>
-            <ul style="margin-top: 15px; margin-left: 20px;">
-                <li>✅ 前场培训 - 学习接待礼仪、点单收银、饮品制作</li>
-                <li>✅ 后场培训 - 学习切柠檬、煮珍珠、咖啡茶饮制作</li>
-                <li>✅ 知识测验 - 测试你的学习成果</li>
+            <h2>👋 ${t('welcome')} ${currentUser?.username || t('newEmployee')}！</h2>
+            <p>${t('welcomeMessage')}</p>
+            <ul style="margin: 15px 0 0 20px;">
+                <li>✅ ${t('navFront')} - ${t('frontDesc')}</li>
+                <li>✅ ${t('navBack')} - ${t('backDesc')}</li>
+                <li>✅ ${t('navQuiz')} - ${t('quizDesc')}</li>
             </ul>
-            <div class="progress-bar" style="margin-top: 20px;">
-                <div class="progress-fill" style="width: ${totalProgress}%"></div>
-            </div>
-            <p style="margin-top: 10px; text-align: center;">总体进度: ${Math.round(totalProgress)}%</p>
+            <div class="progress-bar" style="margin-top: 20px;"><div class="progress-fill" style="width: ${totalProgress}%"></div></div>
+            <p style="margin-top: 10px; text-align: center;">${t('overallProgress')}: ${Math.round(totalProgress)}%</p>
         </div>
-        
         <div class="grid-2">
-            <div class="card">
-                <h3>🍽️ 前场培训</h3>
-                <p>前台服务、点单收银、冰淇淋制作、饮品SOP</p>
-                <p>完成进度: ${completedFront}/${frontTotal}</p>
-                <button onclick="showPage('front')">开始学习 →</button>
-            </div>
-            <div class="card">
-                <h3>🔧 后场培训</h3>
-                <p>切柠檬 · 煮珍珠 · 冰淇淋 · 咖啡 · 茶饮</p>
-                <p>完成进度: ${completedBack}/${backTotal}</p>
-                <button onclick="showPage('back')">开始学习 →</button>
-            </div>
-        </div>
-        
-        <div class="grid-2">
-            <div class="card">
-                <h3>📝 知识测验</h3>
-                <p>测试你对前场和后场知识的掌握程度</p>
-                <p>最新成绩: ${currentUserProgress.quizScore}/${quizData.length}</p>
-                <button onclick="showPage('quiz')">开始测验 →</button>
-            </div>
-            <div class="card">
-                <h3>📊 学习进度</h3>
-                <p>查看你已经完成的培训模块</p>
-                <button onclick="showPage('progress')">查看进度 →</button>
-            </div>
+            <div class="card"><h3>🍽️ ${t('navFront')}</h3><p>${t('frontDesc')}</p><p>${t('overallProgress')}: ${completedFront}/${frontTotal}</p><button onclick="showPage('front')">${t('startLearning')}</button></div>
+            <div class="card"><h3>🔧 ${t('navBack')}</h3><p>${t('backDesc')}</p><p>${t('overallProgress')}: ${completedBack}/${backTotal}</p><button onclick="showPage('back')">${t('startLearning')}</button></div>
+            <div class="card"><h3>📝 ${t('navQuiz')}</h3><p>${t('quizDesc')}</p><p>${t('latestScore')}: ${currentUserProgress.quizScore}/${quizData.length}</p><button onclick="showPage('quiz')">${t('startQuiz')}</button></div>
+            <div class="card"><h3>📊 ${t('navProgress')}</h3><p>${t('viewProgress')}</p><button onclick="showPage('progress')">${t('viewProgress')}</button></div>
         </div>
     `;
     document.getElementById('mainContent').innerHTML = html;
 }
 
 function renderFrontTraining() {
-    let html = `<div class="card"><h2>🍽️ 前场培训</h2></div>`;
+    let html = `<div class="card"><h2>🍽️ ${t('navFront')}</h2><p>${t('frontDesc')}</p></div>`;
     
-    trainingData.front.forEach(training => {
-        const isCompleted = isTrainingCompleted(training.id);
+    trainingData.front.forEach(item => {
+        const isCompleted = isTrainingCompleted(item.id);
+        const content = currentLang === 'zh' ? item.contentZh : item.contentEn;
         html += `
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h3>📖 ${training.title}</h3>
-                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-                        ${isCompleted ? '✅ 已完成' : '⏳ 未开始'}
-                    </span>
-                </div>
-                <div style="margin-top: 15px;"><p>${training.content}</p></div>
-                <div style="margin-top: 15px; text-align: right;">
-                    ${!isCompleted ? 
-                        `<button onclick="markComplete(${training.id})">✅ 标记为已完成</button>` : 
-                        `<span style="color: #28a745;">✓ 已完成</span>`
-                    }
+            <div class="training-card">
+                <div class="card-header"><h2>📖 ${item.title}</h2><span class="status-badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? `✅ ${t('completed')}` : `⏳ ${t('notStarted')}`}</span></div>
+                <div class="card-content training-content">${content}</div>
+                <div class="card-footer">
+                    ${!isCompleted ? `<button class="complete-btn" onclick="markComplete(${item.id})">${t('markComplete')}</button>` : `<span class="completed-date">✓ ${t('completed')}</span>`}
                 </div>
             </div>
         `;
     });
     
-    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>`;
+    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← ${t('backToHome')}</button></div>`;
     document.getElementById('mainContent').innerHTML = html;
 }
 
 function renderBackTraining() {
-    let html = `<div class="card"><h2>🔧 后场培训</h2></div>`;
+    let html = `<div class="card"><h2>🔧 ${t('navBack')}</h2><p>${t('backDesc')}</p></div>`;
     
-    trainingData.back.forEach(training => {
-        const isCompleted = isTrainingCompleted(training.id);
+    trainingData.back.forEach(item => {
+        const isCompleted = isTrainingCompleted(item.id);
+        const content = currentLang === 'zh' ? item.contentZh : item.contentEn;
         html += `
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                    <h3>🔧 ${training.title}</h3>
-                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-                        ${isCompleted ? '✅ 已完成' : '⏳ 未开始'}
-                    </span>
-                </div>
-                <div style="margin-top: 15px;"><p>${training.content}</p></div>
-                <div style="margin-top: 15px; text-align: right;">
-                    ${!isCompleted ? 
-                        `<button onclick="markComplete(${training.id})">✅ 标记为已完成</button>` : 
-                        `<span style="color: #28a745;">✓ 已完成</span>`
-                    }
+            <div class="training-card">
+                <div class="card-header"><h2>🔧 ${item.title}</h2><span class="status-badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? `✅ ${t('completed')}` : `⏳ ${t('notStarted')}`}</span></div>
+                <div class="card-content training-content">${content}</div>
+                <div class="card-footer">
+                    ${!isCompleted ? `<button class="complete-btn" onclick="markComplete(${item.id})">${t('markComplete')}</button>` : `<span class="completed-date">✓ ${t('completed')}</span>`}
                 </div>
             </div>
         `;
     });
     
-    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>`;
+    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← ${t('backToHome')}</button></div>`;
     document.getElementById('mainContent').innerHTML = html;
 }
 
 function renderQuiz() {
-    let quizHtml = `<div class="card"><h2>📝 知识测验</h2></div>`;
+    let html = `<div class="card"><h2>📝 ${t('quizTitle')}</h2></div>`;
     
-    quizData.forEach((q, index) => {
+    quizData.forEach((q, idx) => {
         const savedAnswer = currentUserProgress.quizAnswers[q.id];
-        quizHtml += `
+        const question = currentLang === 'zh' ? q.questionZh : q.questionEn;
+        const options = currentLang === 'zh' ? q.optionsZh : q.optionsEn;
+        html += `
             <div class="quiz-question">
-                <h3>${index + 1}. ${q.question}</h3>
+                <h3>${idx + 1}. ${question}</h3>
                 <div class="quiz-options" id="quiz-${q.id}">
-                    ${q.options.map((opt, optIndex) => {
-                        const letter = String.fromCharCode(65 + optIndex);
-                        return `
-                            <div class="quiz-option ${savedAnswer === letter ? 'selected' : ''}" 
-                                 onclick="selectAnswer(${q.id}, '${letter}')">
-                                <strong>${letter}.</strong> ${opt}
-                            </div>
-                        `;
+                    ${options.map((opt, i) => {
+                        const letter = String.fromCharCode(65 + i);
+                        return `<div class="quiz-option ${savedAnswer === letter ? 'selected' : ''}" onclick="selectAnswer(${q.id}, '${letter}')"><strong>${letter}.</strong> ${opt}</div>`;
                     }).join('')}
                 </div>
             </div>
         `;
     });
     
-    quizHtml += `
-        <div class="card" style="text-align: center;">
-            <button onclick="submitQuiz()">📤 提交答案</button>
-            <button onclick="resetQuiz()" class="btn-secondary">🔄 重置答案</button>
-        </div>
-    `;
-    
-    document.getElementById('mainContent').innerHTML = quizHtml;
+    html += `<div class="card" style="text-align: center;"><button onclick="submitQuiz()">📤 ${t('submitQuiz')}</button><button onclick="resetQuiz()" class="btn-secondary" style="margin-left: 10px;">🔄 ${t('resetQuiz')}</button></div>`;
+    document.getElementById('mainContent').innerHTML = html;
 }
 
 function renderProgress() {
@@ -699,58 +972,27 @@ function renderProgress() {
     
     let html = `
         <div class="card">
-            <h2>📊 学习进度</h2>
+            <h2>📊 ${t('progressTitle')}</h2>
             <div class="progress-bar"><div class="progress-fill" style="width: ${totalProgress}%"></div></div>
-            <p style="margin-top: 10px;">总体完成度: ${Math.round(totalProgress)}%</p>
-            <p style="font-size: 12px; color: #666;">已完成 ${currentUserProgress.completedTrainings.length} 个模块</p>
+            <p style="margin-top: 10px;">${t('overallProgress')}: ${Math.round(totalProgress)}%</p>
+            <p>${t('completedModules')}: ${currentUserProgress.completedTrainings.length}</p>
         </div>
-        
-        <div class="card">
-            <h3>🍽️ 前场培训 (${completedFront}/${frontTotal})</h3>
-            ${trainingData.front.map(t => {
-                const isCompleted = isTrainingCompleted(t.id);
-                return `
-                    <div class="training-module">
-                        <div class="module-info">
-                            <div class="module-title">${t.title}</div>
-                            <div class="module-status">${isCompleted ? '已完成' : '未开始'}</div>
-                        </div>
-                        <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-                            ${isCompleted ? '✅' : '⏳'}
-                        </span>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-        
-        <div class="card">
-            <h3>🔧 后场培训 (${completedBack}/${backTotal})</h3>
-            ${trainingData.back.map(t => {
-                const isCompleted = isTrainingCompleted(t.id);
-                return `
-                    <div class="training-module">
-                        <div class="module-info">
-                            <div class="module-title">${t.title}</div>
-                            <div class="module-status">${isCompleted ? '已完成' : '未开始'}</div>
-                        </div>
-                        <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-                            ${isCompleted ? '✅' : '⏳'}
-                        </span>
-                    </div>
-                `;
-            }).join('')}
-        </div>
-        
-        <div class="card">
-            <h3>📝 测验成绩</h3>
-            <p>最新得分: ${currentUserProgress.quizScore}/${quizData.length}</p>
-            <p>${currentUserProgress.quizScore >= quizData.length * 0.6 ? '🎉 恭喜通过！' : '💪 加油，再试一次！'}</p>
-            <button onclick="showPage('quiz')">重新测验</button>
-            <button onclick="confirmClearProgress()" class="btn-secondary" style="margin-left: 10px;">🗑️ 清除我的进度</button>
-        </div>
-        
-        <div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>
-    `;
+        <div class="card"><h3>🍽️ ${t('frontProgress')} (${completedFront}/${frontTotal})</h3>`;
+    
+    trainingData.front.forEach(item => {
+        const isCompleted = isTrainingCompleted(item.id);
+        html += `<div class="progress-module"><div class="module-info"><div class="module-title">${item.title}</div><div class="module-status">${isCompleted ? t('completed') : t('notStarted')}</div></div><span class="status-badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? '✅' : '⏳'}</span></div>`;
+    });
+    
+    html += `</div><div class="card"><h3>🔧 ${t('backProgress')} (${completedBack}/${backTotal})</h3>`;
+    
+    trainingData.back.forEach(item => {
+        const isCompleted = isTrainingCompleted(item.id);
+        html += `<div class="progress-module"><div class="module-info"><div class="module-title">${item.title}</div><div class="module-status">${isCompleted ? t('completed') : t('notStarted')}</div></div><span class="status-badge ${isCompleted ? 'completed' : 'pending'}">${isCompleted ? '✅' : '⏳'}</span></div>`;
+    });
+    
+    html += `</div><div class="card"><h3>📝 ${t('quizScore')}</h3><p>${t('latestScore')}: ${currentUserProgress.quizScore}/${quizData.length}</p><p>${currentUserProgress.quizScore >= quizData.length * 0.6 ? `🎉 ${t('congratulations')}` : `💪 ${t('tryAgain')}`}</p><button onclick="showPage('quiz')">${t('startQuiz')}</button><button onclick="confirmClearProgress()" class="btn-secondary" style="margin-left: 10px;">${t('clearProgress')}</button></div>
+    <div style="text-align: center;"><button onclick="showPage('dashboard')">← ${t('backToHome')}</button></div>`;
     
     document.getElementById('mainContent').innerHTML = html;
 }
@@ -758,17 +1000,14 @@ function renderProgress() {
 function showLoginPage() {
     const html = `
         <div class="card" style="max-width: 400px; margin: 50px auto;">
-            <h2>🍦 蜜雪冰城培训系统</h2>
-            <h3>员工登录</h3>
+            <h2>🍦 ${t('loginTitle')}</h2>
             <form onsubmit="login(event)">
-                <input type="text" id="loginUsername" placeholder="用户名" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
-                <input type="password" id="loginPassword" placeholder="密码" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
-                <button type="submit" style="width: 100%;">登录</button>
+                <input type="text" id="loginUsername" placeholder="${t('username')}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px;" required>
+                <input type="password" id="loginPassword" placeholder="${t('password')}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px;" required>
+                <button type="submit" style="width:100%;">${t('loginBtn')}</button>
             </form>
-            <div class="register-link">
-                <a onclick="showRegisterPage()">还没有账号？立即注册</a>
-            </div>
-            <p style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">测试账号: admin / 123456</p>
+            <div class="register-link"><a onclick="showRegisterPage()">${t('noAccount')}</a></div>
+            <p style="margin-top:15px; font-size:12px; color:#666; text-align:center;">${t('testAccount')}</p>
         </div>
     `;
     document.getElementById('mainContent').innerHTML = html;
@@ -777,17 +1016,14 @@ function showLoginPage() {
 function showRegisterPage() {
     const html = `
         <div class="card" style="max-width: 400px; margin: 50px auto;">
-            <h2>🍦 蜜雪冰城培训系统</h2>
-            <h3>新员工注册</h3>
+            <h2>🍦 ${t('registerTitle')}</h2>
             <form onsubmit="register(event)">
-                <input type="text" id="regUsername" placeholder="用户名（至少3个字符）" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
-                <input type="password" id="regPassword" placeholder="密码（至少4个字符）" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
-                <input type="password" id="regConfirmPassword" placeholder="确认密码" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
-                <button type="submit" style="width: 100%;">注册</button>
+                <input type="text" id="regUsername" placeholder="${t('usernamePlaceholder')}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px;" required>
+                <input type="password" id="regPassword" placeholder="${t('passwordPlaceholder')}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px;" required>
+                <input type="password" id="regConfirmPassword" placeholder="${t('confirmPassword')}" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:5px;" required>
+                <button type="submit" style="width:100%;">${t('registerBtn')}</button>
             </form>
-            <div class="register-link">
-                <a onclick="showLoginPage()">已有账号？立即登录</a>
-            </div>
+            <div class="register-link"><a onclick="showLoginPage()">${t('hasAccount')}</a></div>
         </div>
     `;
     document.getElementById('mainContent').innerHTML = html;
@@ -802,13 +1038,13 @@ function login(event) {
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     
-    const result = loginUser(username, password);
-    
-    if (result.success) {
-        updateUserDisplay();
+    if (users[username] && users[username].password === password) {
+        currentUser = { username };
+        loadCurrentUserData();
+        document.getElementById('userName').innerHTML = `👋 ${t('welcomeBack')} ${username}`;
         showPage('dashboard');
     } else {
-        alert(result.message);
+        alert('用户名或密码错误！');
     }
 }
 
@@ -816,87 +1052,61 @@ function register(event) {
     event.preventDefault();
     const username = document.getElementById('regUsername').value.trim();
     const password = document.getElementById('regPassword').value;
-    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    const confirm = document.getElementById('regConfirmPassword').value;
     
-    if (password !== confirmPassword) {
-        alert('两次输入的密码不一致！');
-        return;
-    }
+    if (password !== confirm) { alert('两次密码不一致！'); return; }
+    if (username.length < 3) { alert('用户名至少3个字符！'); return; }
+    if (password.length < 4) { alert('密码至少4个字符！'); return; }
+    if (users[username]) { alert('用户名已存在！'); return; }
     
-    const result = registerUser(username, password);
-    
-    if (result.success) {
-        alert(result.message + ' 请登录！');
-        showLoginPage();
-    } else {
-        alert(result.message);
-    }
-}
-
-function logout() {
-    logoutUser();
-    updateUserDisplay();
+    users[username] = { password };
+    saveAllData();
+    alert('注册成功！请登录');
     showLoginPage();
 }
 
-function markComplete(trainingId) {
-    if (currentUserProgress.completedTrainings.includes(trainingId)) {
-        alert('您已经完成过这个培训模块了！');
-        return;
-    }
-    
-    currentUserProgress.completedTrainings.push(trainingId);
-    saveCurrentUserData();
-    
-    console.log('✅ 完成培训:', trainingId);
-    console.log('当前已完成列表:', currentUserProgress.completedTrainings);
-    
-    alert('✅ 恭喜完成本模块学习！');
-    
-    // 刷新当前页面
-    const currentPage = document.querySelector('.nav-links a.active')?.textContent || '首页';
-    if (currentPage === '前场培训') {
-        renderFrontTraining();
-    } else if (currentPage === '后场培训') {
-        renderBackTraining();
-    } else {
-        showPage('progress');
-    }
+function logout() {
+    if (currentUser) saveCurrentUserData();
+    currentUser = null;
+    document.getElementById('userName').innerHTML = '';
+    showLoginPage();
 }
 
-function selectAnswer(questionId, letter) {
-    currentUserProgress.quizAnswers[questionId] = letter;
+function markComplete(id) {
+    if (currentUserProgress.completedTrainings.includes(id)) {
+        alert(t('alreadyCompleted'));
+        return;
+    }
+    currentUserProgress.completedTrainings.push(id);
     saveCurrentUserData();
+    alert(`✅ ${t('congratulations')}`);
     
-    // 更新UI
-    const options = document.querySelectorAll(`#quiz-${questionId} .quiz-option`);
-    options.forEach(opt => {
+    const activeNav = document.querySelector('.nav-links a.active')?.innerText;
+    if (activeNav === t('navFront')) renderFrontTraining();
+    else if (activeNav === t('navBack')) renderBackTraining();
+    else showPage('progress');
+}
+
+function selectAnswer(qid, letter) {
+    currentUserProgress.quizAnswers[qid] = letter;
+    saveCurrentUserData();
+    document.querySelectorAll(`#quiz-${qid} .quiz-option`).forEach(opt => {
         opt.classList.remove('selected');
-        if (opt.innerText.startsWith(letter)) {
-            opt.classList.add('selected');
-        }
+        if (opt.innerText.startsWith(letter)) opt.classList.add('selected');
     });
 }
 
 function submitQuiz() {
     let score = 0;
-    quizData.forEach(q => {
-        if (currentUserProgress.quizAnswers[q.id] === q.answer) {
-            score++;
-        }
-    });
-    
+    quizData.forEach(q => { if (currentUserProgress.quizAnswers[q.id] === q.answer) score++; });
     currentUserProgress.quizScore = score;
     saveCurrentUserData();
-    
-    const passed = score >= quizData.length * 0.6;
-    alert(`测验完成！\n得分: ${score}/${quizData.length}\n${passed ? '🎉 恭喜通过！' : '💪 加油，再学习一下再试一次！'}`);
-    
+    alert(`${t('quizComplete')}\n${t('score')}: ${score}/${quizData.length}\n${score >= quizData.length * 0.6 ? t('congratulations') : t('tryAgain')}`);
     showPage('progress');
 }
 
 function resetQuiz() {
-    if (confirm('确定要重置所有答案吗？')) {
+    if (confirm('确定重置所有答案？')) {
         currentUserProgress.quizAnswers = {};
         currentUserProgress.quizScore = 0;
         saveCurrentUserData();
@@ -905,46 +1115,34 @@ function resetQuiz() {
 }
 
 function confirmClearProgress() {
-    if (confirm('⚠️ 确定要清除您的所有学习进度吗？此操作不可撤销！')) {
-        clearCurrentUserData();
-        alert('您的进度已清除！');
+    if (confirm(t('confirmClear'))) {
+        currentUserProgress = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
+        saveCurrentUserData();
+        alert(t('progressCleared'));
         showPage('progress');
     }
 }
 
 // ============================================
-// 自动保存
-// ============================================
-
-setInterval(() => {
-    if (currentUser) {
-        saveCurrentUserData();
-    }
-}, 5000);
-
-// ============================================
 // 初始化
 // ============================================
 
-// 从 localStorage 加载已有用户数据
 const saved = localStorage.getItem('mixue_training_data');
 if (saved) {
     try {
         const data = JSON.parse(saved);
-        if (data.users) {
-            users = data.users;
-        }
+        if (data.users) users = data.users;
     } catch(e) {}
 }
 
-// 检查是否有登录用户
+setLanguage(currentLang);
+
 if (currentUser) {
+    document.getElementById('userName').innerHTML = `👋 ${t('welcomeBack')} ${currentUser.username}`;
     showPage('dashboard');
 } else {
     showLoginPage();
 }
-
-console.log('系统已启动，支持多账号独立数据存储');
 </script>
 
 </body>
