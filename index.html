@@ -237,12 +237,6 @@
             }
         }
 
-        .completed-date {
-            font-size: 12px;
-            color: #28a745;
-            margin-top: 5px;
-        }
-
         .btn-secondary {
             background: #6c757d;
         }
@@ -251,14 +245,21 @@
             background: #5a6268;
         }
 
-        .debug-info {
-            font-size: 12px;
-            color: #666;
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            display: none;
+        /* 注册页面样式 */
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #d6001c;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -322,67 +323,180 @@ const quizData = [
     { id: 8, question: "使用柠檬机后需要做什么？", options: ["直接放回", "清洗柠檬机", "不管它", "拆解机器"], answer: "B" }
 ];
 
+// 预定义用户（实际使用中会动态添加）
+let users = {
+    'admin': { password: '123456', registerDate: '2024-01-01' },
+    'staff1': { password: '123456', registerDate: '2024-01-01' },
+    'staff2': { password: '123456', registerDate: '2024-01-01' }
+};
+
 // ============================================
 // 全局状态
 // ============================================
 
 let currentUser = null;
-let completedTrainings = [];     // 存储完成的培训ID
-let quizAnswers = {};            // 存储测验答案
-let quizScore = 0;               // 测验得分
+let currentUserProgress = {
+    completedTrainings: [],
+    quizAnswers: {},
+    quizScore: 0
+};
 
 // ============================================
-// 存储操作
+// 存储操作 - 按账号独立存储
 // ============================================
 
-function saveAllData() {
-    const dataToSave = {
-        currentUser: currentUser,
-        completedTrainings: completedTrainings,
-        quizAnswers: quizAnswers,
-        quizScore: quizScore,
-        lastUpdated: new Date().toISOString()
+// 保存所有用户数据到 localStorage
+function saveAllUsersData() {
+    const allData = {
+        users: users,
+        userProgress: {}
     };
-    localStorage.setItem('mixue_training_data', JSON.stringify(dataToSave));
-    console.log('✅ 数据已保存:', dataToSave);
-}
-
-function loadAllData() {
-    const savedData = localStorage.getItem('mixue_training_data');
-    console.log('读取保存的数据:', savedData);
     
-    if (savedData) {
-        try {
-            const data = JSON.parse(savedData);
-            currentUser = data.currentUser || null;
-            completedTrainings = data.completedTrainings || [];
-            quizAnswers = data.quizAnswers || {};
-            quizScore = data.quizScore || 0;
-            console.log('✅ 数据加载成功:', { completedTrainings, quizAnswers, quizScore });
-        } catch(e) {
-            console.error('数据解析失败:', e);
-            initEmptyData();
+    // 为每个用户保存进度数据
+    for (let username in users) {
+        if (username === currentUser?.username && currentUserProgress) {
+            allData.userProgress[username] = currentUserProgress;
+        } else {
+            // 从 localStorage 读取其他用户的进度
+            const saved = localStorage.getItem('mixue_training_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.userProgress && data.userProgress[username]) {
+                    allData.userProgress[username] = data.userProgress[username];
+                } else {
+                    allData.userProgress[username] = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
+                }
+            } else {
+                allData.userProgress[username] = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
+            }
         }
-    } else {
-        console.log('没有找到保存的数据，初始化新数据');
-        initEmptyData();
     }
     
-    updateUserDisplay();
+    localStorage.setItem('mixue_training_data', JSON.stringify(allData));
+    console.log('✅ 所有用户数据已保存');
 }
 
-function initEmptyData() {
-    completedTrainings = [];
-    quizAnswers = {};
-    quizScore = 0;
+// 加载当前用户的数据
+function loadCurrentUserData() {
+    if (!currentUser) return;
+    
+    const saved = localStorage.getItem('mixue_training_data');
+    console.log('加载用户数据:', currentUser.username);
+    
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            if (data.userProgress && data.userProgress[currentUser.username]) {
+                currentUserProgress = data.userProgress[currentUser.username];
+                console.log('✅ 加载用户进度成功:', currentUserProgress);
+            } else {
+                initEmptyProgress();
+                console.log('新用户，初始化空进度');
+            }
+            
+            // 加载用户列表（如果有新注册的用户）
+            if (data.users) {
+                users = data.users;
+            }
+        } catch(e) {
+            console.error('数据解析失败:', e);
+            initEmptyProgress();
+        }
+    } else {
+        initEmptyProgress();
+    }
+    
+    // 保存当前用户数据
+    saveCurrentUserData();
 }
 
-function clearAllData() {
-    completedTrainings = [];
-    quizAnswers = {};
-    quizScore = 0;
-    saveAllData();
-    console.log('所有数据已清除');
+// 保存当前用户的数据
+function saveCurrentUserData() {
+    if (!currentUser) return;
+    
+    const saved = localStorage.getItem('mixue_training_data');
+    let allData = { users: users, userProgress: {} };
+    
+    if (saved) {
+        try {
+            allData = JSON.parse(saved);
+            if (!allData.userProgress) allData.userProgress = {};
+        } catch(e) {
+            allData = { users: users, userProgress: {} };
+        }
+    }
+    
+    // 更新当前用户的进度
+    allData.userProgress[currentUser.username] = currentUserProgress;
+    allData.users = users;
+    
+    localStorage.setItem('mixue_training_data', JSON.stringify(allData));
+    console.log('✅ 当前用户数据已保存:', currentUser.username, currentUserProgress);
+}
+
+function initEmptyProgress() {
+    currentUserProgress = {
+        completedTrainings: [],
+        quizAnswers: {},
+        quizScore: 0
+    };
+}
+
+function clearCurrentUserData() {
+    if (!currentUser) return;
+    initEmptyProgress();
+    saveCurrentUserData();
+    console.log('已清除用户数据:', currentUser.username);
+}
+
+// ============================================
+// 用户管理
+// ============================================
+
+function registerUser(username, password) {
+    if (users[username]) {
+        return { success: false, message: '用户名已存在！' };
+    }
+    
+    if (username.length < 3) {
+        return { success: false, message: '用户名至少3个字符！' };
+    }
+    
+    if (password.length < 4) {
+        return { success: false, message: '密码至少4个字符！' };
+    }
+    
+    users[username] = { 
+        password: password,
+        registerDate: new Date().toISOString()
+    };
+    
+    saveCurrentUserData();
+    return { success: true, message: '注册成功！' };
+}
+
+function loginUser(username, password) {
+    if (!users[username]) {
+        return { success: false, message: '用户名不存在！' };
+    }
+    
+    if (users[username].password !== password) {
+        return { success: false, message: '密码错误！' };
+    }
+    
+    currentUser = { username: username, loginTime: new Date().toISOString() };
+    loadCurrentUserData();
+    saveCurrentUserData();
+    
+    return { success: true, message: '登录成功！' };
+}
+
+function logoutUser() {
+    if (currentUser) {
+        saveCurrentUserData();
+    }
+    currentUser = null;
+    currentUserProgress = { completedTrainings: [], quizAnswers: {}, quizScore: 0 };
 }
 
 // ============================================
@@ -390,7 +504,7 @@ function clearAllData() {
 // ============================================
 
 function isTrainingCompleted(trainingId) {
-    return completedTrainings.includes(trainingId);
+    return currentUserProgress.completedTrainings.includes(trainingId);
 }
 
 function updateUserDisplay() {
@@ -407,7 +521,7 @@ function updateUserDisplay() {
 // ============================================
 
 function showPage(page) {
-    if (!currentUser && page !== 'login') {
+    if (!currentUser && page !== 'login' && page !== 'register') {
         showLoginPage();
         return;
     }
@@ -436,8 +550,8 @@ function getPageChineseName(page) {
 function renderDashboard() {
     const frontTotal = trainingData.front.length;
     const backTotal = trainingData.back.length;
-    const completedFront = completedTrainings.filter(id => id < 100).length;
-    const completedBack = completedTrainings.filter(id => id >= 100).length;
+    const completedFront = currentUserProgress.completedTrainings.filter(id => id < 100).length;
+    const completedBack = currentUserProgress.completedTrainings.filter(id => id >= 100).length;
     const totalProgress = ((completedFront + completedBack) / (frontTotal + backTotal)) * 100;
     
     const html = `
@@ -474,7 +588,7 @@ function renderDashboard() {
             <div class="card">
                 <h3>📝 知识测验</h3>
                 <p>测试你对前场和后场知识的掌握程度</p>
-                <p>最新成绩: ${quizScore}/${quizData.length}</p>
+                <p>最新成绩: ${currentUserProgress.quizScore}/${quizData.length}</p>
                 <button onclick="showPage('quiz')">开始测验 →</button>
             </div>
             <div class="card">
@@ -547,7 +661,7 @@ function renderQuiz() {
     let quizHtml = `<div class="card"><h2>📝 知识测验</h2></div>`;
     
     quizData.forEach((q, index) => {
-        const savedAnswer = quizAnswers[q.id];
+        const savedAnswer = currentUserProgress.quizAnswers[q.id];
         quizHtml += `
             <div class="quiz-question">
                 <h3>${index + 1}. ${q.question}</h3>
@@ -579,8 +693,8 @@ function renderQuiz() {
 function renderProgress() {
     const frontTotal = trainingData.front.length;
     const backTotal = trainingData.back.length;
-    const completedFront = completedTrainings.filter(id => id < 100).length;
-    const completedBack = completedTrainings.filter(id => id >= 100).length;
+    const completedFront = currentUserProgress.completedTrainings.filter(id => id < 100).length;
+    const completedBack = currentUserProgress.completedTrainings.filter(id => id >= 100).length;
     const totalProgress = ((completedFront + completedBack) / (frontTotal + backTotal)) * 100;
     
     let html = `
@@ -588,7 +702,7 @@ function renderProgress() {
             <h2>📊 学习进度</h2>
             <div class="progress-bar"><div class="progress-fill" style="width: ${totalProgress}%"></div></div>
             <p style="margin-top: 10px;">总体完成度: ${Math.round(totalProgress)}%</p>
-            <p style="font-size: 12px; color: #666;">已完成 ${completedTrainings.length} 个模块</p>
+            <p style="font-size: 12px; color: #666;">已完成 ${currentUserProgress.completedTrainings.length} 个模块</p>
         </div>
         
         <div class="card">
@@ -629,10 +743,10 @@ function renderProgress() {
         
         <div class="card">
             <h3>📝 测验成绩</h3>
-            <p>最新得分: ${quizScore}/${quizData.length}</p>
-            <p>${quizScore >= quizData.length * 0.6 ? '🎉 恭喜通过！' : '💪 加油，再试一次！'}</p>
+            <p>最新得分: ${currentUserProgress.quizScore}/${quizData.length}</p>
+            <p>${currentUserProgress.quizScore >= quizData.length * 0.6 ? '🎉 恭喜通过！' : '💪 加油，再试一次！'}</p>
             <button onclick="showPage('quiz')">重新测验</button>
-            <button onclick="confirmClearProgress()" class="btn-secondary" style="margin-left: 10px;">🗑️ 清除所有进度</button>
+            <button onclick="confirmClearProgress()" class="btn-secondary" style="margin-left: 10px;">🗑️ 清除我的进度</button>
         </div>
         
         <div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>
@@ -651,7 +765,29 @@ function showLoginPage() {
                 <input type="password" id="loginPassword" placeholder="密码" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
                 <button type="submit" style="width: 100%;">登录</button>
             </form>
+            <div class="register-link">
+                <a onclick="showRegisterPage()">还没有账号？立即注册</a>
+            </div>
             <p style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">测试账号: admin / 123456</p>
+        </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+function showRegisterPage() {
+    const html = `
+        <div class="card" style="max-width: 400px; margin: 50px auto;">
+            <h2>🍦 蜜雪冰城培训系统</h2>
+            <h3>新员工注册</h3>
+            <form onsubmit="register(event)">
+                <input type="text" id="regUsername" placeholder="用户名（至少3个字符）" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
+                <input type="password" id="regPassword" placeholder="密码（至少4个字符）" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
+                <input type="password" id="regConfirmPassword" placeholder="确认密码" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
+                <button type="submit" style="width: 100%;">注册</button>
+            </form>
+            <div class="register-link">
+                <a onclick="showLoginPage()">已有账号？立即登录</a>
+            </div>
         </div>
     `;
     document.getElementById('mainContent').innerHTML = html;
@@ -663,40 +799,57 @@ function showLoginPage() {
 
 function login(event) {
     event.preventDefault();
-    const username = document.getElementById('loginUsername').value;
+    const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value;
     
-    if ((username === 'admin' && password === '123456') || 
-        (username === 'staff1' && password === '123456') ||
-        (username === 'staff2' && password === '123456')) {
-        
-        currentUser = { username: username, loginTime: new Date().toISOString() };
-        saveAllData();
+    const result = loginUser(username, password);
+    
+    if (result.success) {
         updateUserDisplay();
         showPage('dashboard');
     } else {
-        alert('用户名或密码错误！\n测试账号: admin / 123456');
+        alert(result.message);
+    }
+}
+
+function register(event) {
+    event.preventDefault();
+    const username = document.getElementById('regUsername').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        alert('两次输入的密码不一致！');
+        return;
+    }
+    
+    const result = registerUser(username, password);
+    
+    if (result.success) {
+        alert(result.message + ' 请登录！');
+        showLoginPage();
+    } else {
+        alert(result.message);
     }
 }
 
 function logout() {
-    currentUser = null;
-    saveAllData();
+    logoutUser();
     updateUserDisplay();
     showLoginPage();
 }
 
 function markComplete(trainingId) {
-    if (completedTrainings.includes(trainingId)) {
+    if (currentUserProgress.completedTrainings.includes(trainingId)) {
         alert('您已经完成过这个培训模块了！');
         return;
     }
     
-    completedTrainings.push(trainingId);
-    saveAllData();
+    currentUserProgress.completedTrainings.push(trainingId);
+    saveCurrentUserData();
     
     console.log('✅ 完成培训:', trainingId);
-    console.log('当前已完成列表:', completedTrainings);
+    console.log('当前已完成列表:', currentUserProgress.completedTrainings);
     
     alert('✅ 恭喜完成本模块学习！');
     
@@ -712,8 +865,8 @@ function markComplete(trainingId) {
 }
 
 function selectAnswer(questionId, letter) {
-    quizAnswers[questionId] = letter;
-    saveAllData();
+    currentUserProgress.quizAnswers[questionId] = letter;
+    saveCurrentUserData();
     
     // 更新UI
     const options = document.querySelectorAll(`#quiz-${questionId} .quiz-option`);
@@ -728,13 +881,13 @@ function selectAnswer(questionId, letter) {
 function submitQuiz() {
     let score = 0;
     quizData.forEach(q => {
-        if (quizAnswers[q.id] === q.answer) {
+        if (currentUserProgress.quizAnswers[q.id] === q.answer) {
             score++;
         }
     });
     
-    quizScore = score;
-    saveAllData();
+    currentUserProgress.quizScore = score;
+    saveCurrentUserData();
     
     const passed = score >= quizData.length * 0.6;
     alert(`测验完成！\n得分: ${score}/${quizData.length}\n${passed ? '🎉 恭喜通过！' : '💪 加油，再学习一下再试一次！'}`);
@@ -744,38 +897,28 @@ function submitQuiz() {
 
 function resetQuiz() {
     if (confirm('确定要重置所有答案吗？')) {
-        quizAnswers = {};
-        quizScore = 0;
-        saveAllData();
+        currentUserProgress.quizAnswers = {};
+        currentUserProgress.quizScore = 0;
+        saveCurrentUserData();
         renderQuiz();
     }
 }
 
 function confirmClearProgress() {
-    if (confirm('⚠️ 确定要清除所有学习进度吗？此操作不可撤销！')) {
-        clearAllData();
-        alert('所有进度已清除！');
+    if (confirm('⚠️ 确定要清除您的所有学习进度吗？此操作不可撤销！')) {
+        clearCurrentUserData();
+        alert('您的进度已清除！');
         showPage('progress');
     }
 }
 
 // ============================================
-// 调试函数（按F12打开控制台可看到）
+// 自动保存
 // ============================================
 
-function showDebugInfo() {
-    console.log('=== 调试信息 ===');
-    console.log('当前用户:', currentUser);
-    console.log('已完成培训:', completedTrainings);
-    console.log('测验答案:', quizAnswers);
-    console.log('测验得分:', quizScore);
-    console.log('本地存储:', localStorage.getItem('mixue_training_data'));
-}
-
-// 每5秒自动保存一次（保险）
 setInterval(() => {
     if (currentUser) {
-        saveAllData();
+        saveCurrentUserData();
     }
 }, 5000);
 
@@ -783,15 +926,25 @@ setInterval(() => {
 // 初始化
 // ============================================
 
-loadAllData();
+// 从 localStorage 加载已有用户数据
+const saved = localStorage.getItem('mixue_training_data');
+if (saved) {
+    try {
+        const data = JSON.parse(saved);
+        if (data.users) {
+            users = data.users;
+        }
+    } catch(e) {}
+}
+
+// 检查是否有登录用户
 if (currentUser) {
     showPage('dashboard');
 } else {
     showLoginPage();
 }
 
-// 显示调试信息到控制台
-showDebugInfo();
+console.log('系统已启动，支持多账号独立数据存储');
 </script>
 
 </body>
