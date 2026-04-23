@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜜雪冰城培训系统 - Mixue Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo h1 {
+            font-size: 20px;
+            color: #d6001c;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #d6001c;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #d6001c;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            color: #d6001c;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: #d6001c;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #d6001c;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #d6001c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #a80016;
+            transform: scale(1.05);
+        }
+
+        /* 网格布局 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #d6001c);
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        /* 学习进度页面 */
+        .training-module {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .module-info {
+            flex: 1;
+        }
+
+        .module-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .module-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .status-pending {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        /* 测验页面 */
+        .quiz-question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .quiz-option {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid #e9ecef;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+
+        .quiz-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="navbar" id="navbar">
+    <div class="logo">
+        <img src="images/Mixue-Logo.jpg" alt="Mixue Logo" onerror="this.src='https://placehold.co/50x50/d6001c/white?text=M'">
+        <h1>🍦 蜜雪冰城培训系统</h1>
+    </div>
+    <div class="nav-links" id="navLinks">
+        <a href="#" onclick="showPage('dashboard')">首页</a>
+        <a href="#" onclick="showPage('front')">前场培训</a>
+        <a href="#" onclick="showPage('back')">后场培训</a>
+        <a href="#" onclick="showPage('quiz')">知识测验</a>
+        <a href="#" onclick="showPage('progress')">学习进度</a>
+    </div>
+    <div class="user-info" id="userInfo">
+        <span class="user-name" id="userName"></span>
+        <button class="logout-btn" onclick="logout()">退出登录</button>
+    </div>
+</div>
+
+<!-- 主内容区域 -->
+<div class="container" id="mainContent"></div>
+
+<script>
+// ============================================
+// 数据定义
+// ============================================
+
+// 培训内容数据
+const trainingData = {
+    front: [
+        { id: 1, title: "前台接待礼仪", content: "微笑问候顾客，使用标准欢迎语'欢迎光临蜜雪冰城'，主动询问顾客需求。保持仪容整洁，佩戴工牌。" },
+        { id: 2, title: "点单收银流程", content: "准确记录顾客点单，重复确认订单，熟练使用收银系统，快速找零。推荐当季新品和套餐。" },
+        { id: 3, title: "冰淇淋制作标准", content: "原味：8000ml过滤水+3kg奶昔粉；香芋：8000ml过滤水+3kg香芋奶昔粉。计时器18分钟搅拌，每3分钟搅拌一次。" },
+        { id: 4, title: "绿茶系列", content: "原味茉莉绿茶：糖浆60g + 茉莉绿茶240ml + 加冰加水<br>蜜桃茉莉绿茶：糖浆40g + 桃子果酱75g + 黄桃晶球120g + 茉莉绿茶120ml<br>奇异果茉莉绿茶：果糖20g + 糖浆40g + 椰子冻50g + 奇异果酱75g + 黄桃晶球40g + 茉莉绿茶120ml" },
+        { id: 5, title: "红茶系列", content: "原味红茶：糖浆50g + 红茶200ml + 加冰加水<br>蜜桃红茶：糖浆40g + 黄桃果酱100g + 黄桃晶球120g + 红茶100ml<br>柠檬红茶：柠檬40g(捶打) + 果糖40g + 糖浆30g + 红茶120ml" },
+        { id: 6, title: "奶茶系列", content: "经典奶茶(中杯)：糖30g + 珍珠/红糖晶球/椰子冻 80g/80g/50g<br>红糖珍珠奶茶：红糖糖浆30g挂壁 + 珍珠80g<br>太妃榛果奶茶：太妃榛果糖浆40g + 红糖晶球80g" },
+        { id: 7, title: "咖啡系列", content: "冰拿铁：糖浆20g + 加冰 + 浓缩奶180g + 咖啡120g<br>红糖拿铁：红糖糖浆40g挂壁 + 加冰 + 浓缩奶160g + 咖啡100g<br>太妃榛果拿铁：太妃榛果糖浆40g + 加冰 + 浓缩奶160g + 咖啡100g" },
+        { id: 8, title: "冰淇淋圣代系列", content: "超级波波圣代：红糖糖浆10g挂壁 + 原味冰淇淋180g + 珍珠80g<br>超级芒果圣代：原味冰淇淋180g + 芒果果酱50g<br>蜜桃圣代：原味冰淇淋180g + 蜜桃果酱25g + 水晶冻50g" }
+    ],
+    back: [
+        { id: 101, title: "切柠檬标准流程", content: "可选择掐头去尾后用柠檬机切（请小心手）<br>或者用手切柠檬<br>使用后记得清洗柠檬机" },
+        { id: 102, title: "煮珍珠标准流程", content: "倒入4000ml热水，按1号键开始煮<br>听见珍珠锅响后倒入珍珠<br>煮35分钟，焖30分钟<br>珍珠煮好后过滤，用过滤水清洗至粒粒分明<br>清洗完成加入糖浆搅拌均匀即可使用<br>1包珍珠（500g）配1包糖浆" },
+        { id: 103, title: "冰淇淋制作详细流程", content: "原味：8000ml过滤水+3kg奶昔粉<br>香芋：8000ml过滤水+3kg香芋奶昔粉<br>计时器选18分钟开始搅拌，3分钟后计时器响就静止，计时器每响一次就搅拌一下" },
+        { id: 104, title: "咖啡制作标准", content: "600g热水+100g咖啡粉+600g冰<br>1200g热水+200g咖啡粉+1200g冰（以此类推）<br>热水和冰的比例1:1<br>加入咖啡粉后搅拌至融化" },
+        { id: 105, title: "浓缩奶制作", content: "奶茶粉:热水:冰 = 1:1:1<br>加入热水后加奶粉<br>用搅拌器搅拌至奶粉融化<br>最后加冰" },
+        { id: 106, title: "茶类制作标准", content: "奶茶：1400g水+650g奶茶粉+900g冰<br>绿茶：1500g热水+一包绿茶+1000g冰，焖6分钟<br>红茶：1800g热水+一包红茶+1000g冰，焖12分钟" },
+        { id: 107, title: "后场注意事项", content: "随时注意前场是否缺料，及时补充<br>货架空了请立即补货，切勿将货物放在地上（总部会扣分）<br>保持后场整洁，空闲时间多抹货架" }
+    ]
+};
+
+// 测验题目数据
+const quizData = [
+    { id: 1, question: "蜜雪冰城成立于哪一年？", options: ["1995年", "1996年", "1997年", "1998年"], answer: "C" },
+    { id: 2, question: "原味冰淇淋的标准配方是？", options: ["6000ml水+2kg粉", "7000ml水+2.5kg粉", "8000ml水+3kg粉", "9000ml水+3.5kg粉"], answer: "C" },
+    { id: 3, question: "煮珍珠需要煮多少分钟？", options: ["25分钟", "30分钟", "35分钟", "40分钟"], answer: "C" },
+    { id: 4, question: "珍珠煮好后需要焖多久？", options: ["15分钟", "20分钟", "25分钟", "30分钟"], answer: "D" },
+    { id: 5, question: "绿茶的茶叶应该放在哪里？", options: ["热水底下", "热水上面", "冷水里面", "随意放置"], answer: "B" },
+    { id: 6, question: "后场货物可以放在地上吗？", options: ["可以", "不可以", "紧急时可以", "主管同意可以"], answer: "B" },
+    { id: 7, question: "咖啡制作中，热水和冰的比例是？", options: ["1:2", "2:1", "1:1", "1:3"], answer: "C" },
+    { id: 8, question: "使用柠檬机后需要做什么？", options: ["直接放回", "清洗柠檬机", "不管它", "拆解机器"], answer: "B" }
+];
+
+// 用户数据
+let currentUser = null;
+let userProgress = {
+    completedTrainings: [],  // 完成的培训ID
+    quizAnswers: {},          // 测验答案
+    quizScore: 0              // 测验得分
+};
+
+// ============================================
+// 本地存储操作
+// ============================================
+
+function loadFromStorage() {
+    const savedUser = localStorage.getItem('mixue_currentUser');
+    const savedProgress = localStorage.getItem('mixue_progress');
+    
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+    }
+    
+    if (savedProgress) {
+        userProgress = JSON.parse(savedProgress);
+    } else {
+        userProgress = {
+            completedTrainings: [],
+            quizAnswers: {},
+            quizScore: 0
+        };
+    }
+    
+    updateUserDisplay();
+}
+
+function saveToStorage() {
+    if (currentUser) {
+        localStorage.setItem('mixue_currentUser', JSON.stringify(currentUser));
+    }
+    localStorage.setItem('mixue_progress', JSON.stringify(userProgress));
+}
+
+// ============================================
+// 用户界面更新
+// ============================================
+
+function updateUserDisplay() {
+    const userNameSpan = document.getElementById('userName');
+    if (currentUser) {
+        userNameSpan.textContent = `👋 ${currentUser.username}`;
+    } else {
+        userNameSpan.textContent = '';
+    }
+}
+
+// ============================================
+// 页面渲染函数
+// ============================================
+
+function showPage(page) {
+    // 检查登录状态
+    if (!currentUser && page !== 'login') {
+        showLoginPage();
+        return;
+    }
+    
+    // 更新导航栏激活状态
+    const links = document.querySelectorAll('.nav-links a');
+    links.forEach(link => link.classList.remove('active'));
+    if (page !== 'login') {
+        const activeLink = document.querySelector(`.nav-links a[onclick*="showPage('${page}')"]`);
+        if (activeLink) activeLink.classList.add('active');
+    }
+    
+    // 渲染页面
+    switch(page) {
+        case 'dashboard':
+            renderDashboard();
+            break;
+        case 'front':
+            renderFrontTraining();
+            break;
+        case 'back':
+            renderBackTraining();
+            break;
+        case 'quiz':
+            renderQuiz();
+            break;
+        case 'progress':
+            renderProgress();
+            break;
+        default:
+            renderDashboard();
+    }
+}
+
+function renderDashboard() {
+    const frontTotal = trainingData.front.length;
+    const backTotal = trainingData.back.length;
+    const completedFront = userProgress.completedTrainings.filter(id => id <= 100).length;
+    const completedBack = userProgress.completedTrainings.filter(id => id > 100).length;
+    const totalProgress = ((completedFront + completedBack) / (frontTotal + backTotal)) * 100;
+    
+    const html = `
+        <div class="card">
+            <h2>👋 欢迎 ${currentUser?.username || '新员工'}！</h2>
+            <p>欢迎加入蜜雪冰城大家庭！请按照以下顺序完成培训：</p>
+            <ul style="margin-top: 15px; margin-left: 20px;">
+                <li>✅ 前场培训 - 学习接待礼仪、点单收银、饮品制作</li>
+                <li>✅ 后场培训 - 学习切柠檬、煮珍珠、咖啡茶饮制作</li>
+                <li>✅ 知识测验 - 测试你的学习成果</li>
+            </ul>
+            <div class="progress-bar" style="margin-top: 20px;">
+                <div class="progress-fill" style="width: ${totalProgress}%"></div>
+            </div>
+            <p style="margin-top: 10px; text-align: center;">总体进度: ${Math.round(totalProgress)}%</p>
+        </div>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>🍽️ 前场培训</h3>
+                <p>前台服务、点单收银、冰淇淋制作、饮品SOP</p>
+                <p>完成进度: ${completedFront}/${frontTotal}</p>
+                <button onclick="showPage('front')">开始学习 →</button>
+            </div>
+            
+            <div class="card">
+                <h3>🔧 后场培训</h3>
+                <p>切柠檬 · 煮珍珠 · 冰淇淋 · 咖啡 · 茶饮 · 后场注意事项</p>
+                <p>完成进度: ${completedBack}/${backTotal}</p>
+                <button onclick="showPage('back')">开始学习 →</button>
+            </div>
+        </div>
+        
+        <div class="grid-2">
+            <div class="card">
+                <h3>📝 知识测验</h3>
+                <p>测试你对前场和后场知识的掌握程度</p>
+                <p>最新成绩: ${userProgress.quizScore}/${quizData.length}</p>
+                <button onclick="showPage('quiz')">开始测验 →</button>
+            </div>
+            
+            <div class="card">
+                <h3>📊 学习进度</h3>
+                <p>查看你已经完成的培训模块</p>
+                <button onclick="showPage('progress')">查看进度 →</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderFrontTraining() {
+    let html = `<div class="card"><h2>🍽️ 前场培训</h2><p>前台服务 · 点单收银 · 冰淇淋制作 · 饮品SOP</p></div>`;
+    
+    trainingData.front.forEach(training => {
+        const isCompleted = userProgress.completedTrainings.includes(training.id);
+        
+        html += `
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <h3>📖 ${training.title}</h3>
+                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                        ${isCompleted ? '✅ 已完成' : '⏳ 未开始'}
+                    </span>
+                </div>
+                <div class="module-info" style="margin-top: 15px;">
+                    <p>${training.content}</p>
+                </div>
+                <div style="margin-top: 15px; text-align: right;">
+                    ${!isCompleted ? `<button onclick="markComplete(${training.id})">✅ 标记为已完成</button>` : `<span style="color: #28a745;">✓ 已完成于 ${userProgress.completedTrainings.find(t => t.id === training.id)?.date || ''}</span>`}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>`;
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderBackTraining() {
+    let html = `<div class="card"><h2>🔧 后场培训</h2><p>切柠檬 · 煮珍珠 · 冰淇淋 · 咖啡 · 茶饮 · 后场注意事项</p></div>`;
+    
+    trainingData.back.forEach(training => {
+        const isCompleted = userProgress.completedTrainings.includes(training.id);
+        
+        html += `
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <h3>🔧 ${training.title}</h3>
+                    <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                        ${isCompleted ? '✅ 已完成' : '⏳ 未开始'}
+                    </span>
+                </div>
+                <div class="module-info" style="margin-top: 15px;">
+                    <p>${training.content}</p>
+                </div>
+                <div style="margin-top: 15px; text-align: right;">
+                    ${!isCompleted ? `<button onclick="markComplete(${training.id})">✅ 标记为已完成</button>` : `<span style="color: #28a745;">✓ 已完成</span>`}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `<div style="text-align: center;"><button onclick="showPage('dashboard')">← 返回首页</button></div>`;
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+function renderQuiz() {
+    let quizHtml = `<div class="card"><h2>📝 知识测验</h2><p>请回答以下问题：</p></div>`;
+    
+    quizData.forEach((q, index) => {
+        const savedAnswer = userProgress.quizAnswers[q.id];
+        
+        quizHtml += `
+            <div class="quiz-question">
+                <h3>${index + 1}. ${q.question}</h3>
+                <div class="quiz-options" id="quiz-${q.id}">
+                    ${q.options.map((opt, optIndex) => {
+                        const letter = String.fromCharCode(65 + optIndex);
+                        return `
+                            <div class="quiz-option ${savedAnswer === letter ? 'selected' : ''}" 
+                                 onclick="selectAnswer(${q.id}, '${letter}')">
+                                <strong>${letter}.</strong> ${opt}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    });
+    
+    quizHtml += `
+        <div class="card" style="text-align: center;">
+            <button onclick="submitQuiz()">📤 提交答案</button>
+            <button onclick="resetQuiz()" style="background: #6c757d;">🔄 重置答案</button>
+        </div>
+    `;
+    
+    document.getElementById('mainContent').innerHTML = quizHtml;
+}
+
+function renderProgress() {
+    const frontTotal = trainingData.front.length;
+    const backTotal = trainingData.back.length;
+    const completedFront = userProgress.completedTrainings.filter(id => id <= 100).length;
+    const completedBack = userProgress.completedTrainings.filter(id => id > 100).length;
+    const totalProgress = ((completedFront + completedBack) / (frontTotal + backTotal)) * 100;
+    
+    let html = `
+        <div class="card">
+            <h2>📊 学习进度</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${totalProgress}%"></div>
+            </div>
+            <p style="margin-top: 10px;">总体完成度: ${Math.round(totalProgress)}%</p>
+        </div>
+        
+        <div class="card">
+            <h3>🍽️ 前场培训进度 (${completedFront}/${frontTotal})</h3>
+            ${trainingData.front.map(t => {
+                const isCompleted = userProgress.completedTrainings.includes(t.id);
+                return `
+                    <div class="training-module">
+                        <div class="module-info">
+                            <div class="module-title">${t.title}</div>
+                            <div class="module-status">${isCompleted ? '已完成' : '未开始'}</div>
+                        </div>
+                        <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                            ${isCompleted ? '✅' : '⏳'}
+                        </span>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+        
+        <div class="card">
+            <h3>🔧 后场培训进度 (${completedBack}/${backTotal})</h3>
+            ${trainingData.back.map(t => {
+                const isCompleted = userProgress.completedTrainings.includes(t.id);
+                return `
+                    <div class="training-module">
+                        <div class="module-info">
+                            <div class="module-title">${t.title}</div>
+                            <div class="module-status">${isCompleted ? '已完成' : '未开始'}</div>
+                        </div>
+                        <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                            ${isCompleted ? '✅' : '⏳'}
+                        </span>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+        
+        <div class="card">
+            <h3>📝 测验成绩</h3>
+            <p>最新得分: ${userProgress.quizScore}/${quizData.length}</p>
+            <p>${userProgress.quizScore >= quizData.length * 0.6 ? '🎉 恭喜通过！' : '💪 加油，再试一次！'}</p>
+            <button onclick="showPage('quiz')">重新测验</button>
+        </div>
+        
+        <div style="text-align: center;">
+            <button onclick="showPage('dashboard')">← 返回首页</button>
+        </div>
+    `;
+    
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+function showLoginPage() {
+    const html = `
+        <div class="card" style="max-width: 400px; margin: 50px auto;">
+            <h2>🍦 蜜雪冰城培训系统</h2>
+            <h3>员工登录</h3>
+            <form onsubmit="login(event)">
+                <input type="text" id="loginUsername" placeholder="用户名" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
+                <input type="password" id="loginPassword" placeholder="密码" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;" required>
+                <button type="submit" style="width: 100%;">登录</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">测试账号: admin / 123456</p>
+        </div>
+    `;
+    document.getElementById('mainContent').innerHTML = html;
+}
+
+// ============================================
+// 交互函数
+// ============================================
+
+function login(event) {
+    event.preventDefault();
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    // 简单验证
+    if ((username === 'admin' && password === '123456') || 
+        (username === 'staff1' && password === '123456') ||
+        (username === 'staff2' && password === '123456')) {
+        
+        currentUser = { username: username, loginTime: new Date().toISOString() };
+        saveToStorage();
+        updateUserDisplay();
+        showPage('dashboard');
+    } else {
+        alert('用户名或密码错误！\n测试账号: admin / 123456');
+    }
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('mixue_currentUser');
+    updateUserDisplay();
+    showLoginPage();
+}
+
+function markComplete(trainingId) {
+    if (!userProgress.completedTrainings.includes(trainingId)) {
+        userProgress.completedTrainings.push({
+            id: trainingId,
+            date: new Date().toLocaleString()
+        });
+        saveToStorage();
+        
+        // 显示成功消息
+        alert('✅ 恭喜完成本模块学习！');
+        
+        // 刷新当前页面
+        const currentPage = document.querySelector('.nav-links a.active')?.innerText === '首页' ? 'dashboard' :
+                           document.querySelector('.nav-links a.active')?.innerText === '前场培训' ? 'front' : 'back';
+        showPage(currentPage);
+    }
+}
+
+function selectAnswer(questionId, letter) {
+    userProgress.quizAnswers[questionId] = letter;
+    saveToStorage();
+    
+    // 更新UI
+    const options = document.querySelectorAll(`#quiz-${questionId} .quiz-option`);
+    options.forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.innerText.startsWith(letter)) {
+            opt.classList.add('selected');
+        }
+    });
+}
+
+function submitQuiz() {
+    let score = 0;
+    quizData.forEach(q => {
+        const userAnswer = userProgress.quizAnswers[q.id];
+        if (userAnswer === q.answer) {
+            score++;
+        }
+    });
+    
+    userProgress.quizScore = score;
+    saveToStorage();
+    
+    const passed = score >= quizData.length * 0.6;
+    alert(`测验完成！\n得分: ${score}/${quizData.length}\n${passed ? '🎉 恭喜通过！' : '💪 加油，再学习一下再试一次！'}`);
+    
+    showPage('progress');
+}
+
+function resetQuiz() {
+    if (confirm('确定要重置所有答案吗？')) {
+        userProgress.quizAnswers = {};
+        userProgress.quizScore = 0;
+        saveToStorage();
+        renderQuiz();
+    }
+}
+
+// ============================================
+// 初始化
+// ============================================
+
+loadFromStorage();
+if (currentUser) {
+    showPage('dashboard');
+} else {
+    showLoginPage();
+}
+</script>
+
+</body>
+</html>
